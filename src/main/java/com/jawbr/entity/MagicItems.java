@@ -1,5 +1,10 @@
 package com.jawbr.entity;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.jawbr.jsonViews.NoIdView;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "magic_items")
@@ -19,28 +25,44 @@ public class MagicItems {
 	@Column(name = "id")
 	private int id;
 	
+	@JsonView(NoIdView.class)
 	@Column(name = "indexname")
 	private String indexName;
 	
+	@JsonView(NoIdView.class)
 	@Column(name = "name")
 	private String itemName;
 	
 	@Column(name = "descr")
 	private String descr;
 	
+	@JsonView(NoIdView.class)
+	@Transient
+	private List<String> description;
+	
+	@JsonView(NoIdView.class)
 	@Column(name = "rarity")
 	private String rarity;
 	
+	@JsonView(NoIdView.class)
 	@Column(name = "url")
 	private String url;
 	
+	@JsonView(NoIdView.class)
 	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "equipment_category_fk")
 	private EquipmentCategory equipCategory;
 	
+	@JsonView(NoIdView.class)
 	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "source_name_fk")
 	private SourceBook sourceBook;
+	
+	@Transient
+	private String descr_top;
+	
+	@Transient
+	private String descr_down;
 	
 	public MagicItems() {}
 
@@ -115,6 +137,30 @@ public class MagicItems {
 
 	public void setSourceBook(SourceBook sourceBook) {
 		this.sourceBook = sourceBook;
+	}
+
+	public String getDescr_top() {
+		return descr_top;
+	}
+
+	public void setDescr_top(String descr_top) {
+		this.descr_top = descr_top;
+	}
+
+	public String getDescr_down() {
+		return descr_down;
+	}
+
+	public void setDescr_down(String descr_down) {
+		this.descr_down = descr_down;
+	}
+
+	public List<String> getDescription() {
+		return description;
+	}
+
+	public void setDescription(List<String> description) {
+		this.description = description;
 	}
 
 	@Override

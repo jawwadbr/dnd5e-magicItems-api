@@ -1,5 +1,8 @@
 package com.jawbr.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.jawbr.jsonViews.NoIdView;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +22,7 @@ public class EquipmentCategory {
 	@Column(name = "indexname")
 	private String indexName;
 	
+	@JsonView(NoIdView.class)
 	@Column(name = "name")
 	private String categoryName;
 	

@@ -1,5 +1,8 @@
 package com.jawbr.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.jawbr.jsonViews.NoIdView;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +19,7 @@ public class SourceBook {
 	@Column(name = "id")
 	private int id;
 	
+	@JsonView(NoIdView.class)
 	@Column(name = "source_name")
 	private String sourceName;
 	
