@@ -58,12 +58,6 @@ public class MagicItems {
 	@JoinColumn(name = "source_name_fk")
 	private SourceBook sourceBook;
 	
-	@Transient
-	private String descr_top;
-	
-	@Transient
-	private String descr_down;
-	
 	public MagicItems() {}
 
 	public MagicItems(String itemName, String descr, String rarity, EquipmentCategory equipCategory,
@@ -139,22 +133,6 @@ public class MagicItems {
 		this.sourceBook = sourceBook;
 	}
 
-	public String getDescr_top() {
-		return descr_top;
-	}
-
-	public void setDescr_top(String descr_top) {
-		this.descr_top = descr_top;
-	}
-
-	public String getDescr_down() {
-		return descr_down;
-	}
-
-	public void setDescr_down(String descr_down) {
-		this.descr_down = descr_down;
-	}
-
 	public List<String> getDescription() {
 		return description;
 	}
@@ -166,9 +144,8 @@ public class MagicItems {
 	@Override
 	public String toString() {
 		return "MagicItems [id=" + id + ", indexName=" + indexName + ", url=" + url + ", itemName=" + itemName
-				+ ", descr=" + descr + ", rarity=" + rarity + ", equipCategory=" + equipCategory + ", sourceBook="
+				+ ", descr=" + description + ", rarity=" + rarity + ", equipCategory=" + equipCategory + ", sourceBook="
 				+ sourceBook + "]";
 	}
-	
 	
 }

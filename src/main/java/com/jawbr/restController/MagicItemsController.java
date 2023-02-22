@@ -25,6 +25,7 @@ public class MagicItemsController {
 	@JsonView(NoIdView.class)
 	@GetMapping()
 	public List<MagicItems> getAllMagicItems() {
+		
 		List<MagicItems> items = magicItemsService.getMagicItems();
 		
 		SplitDescr.splitDescr(items);
