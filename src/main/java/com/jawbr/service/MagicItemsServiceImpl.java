@@ -22,8 +22,9 @@ public class MagicItemsServiceImpl implements MagicItemsService {
 	}
 
 	@Override
-	public MagicItems getMagicItem(String indexName) {
-		return magicItemsDAO.getMagicItem(indexName);
+	@Transactional(readOnly = true)
+	public MagicItems getMagicItem(String magicItemIndexName) {
+		return magicItemsDAO.getMagicItem(magicItemIndexName);
 	}
 
 }

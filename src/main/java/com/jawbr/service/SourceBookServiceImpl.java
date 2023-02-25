@@ -22,7 +22,7 @@ public class SourceBookServiceImpl implements SourceBookService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public SourceBook getSourceBook(int id) {
 		return sourceBookDAO.getSourceBook(id);
 	}

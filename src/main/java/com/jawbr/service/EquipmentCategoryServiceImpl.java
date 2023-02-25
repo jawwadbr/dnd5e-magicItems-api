@@ -22,7 +22,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public EquipmentCategory getEquipmentCategory(int id) {
 		return equipCategoryDAO.getEquipmentCategory(id);
 	}
