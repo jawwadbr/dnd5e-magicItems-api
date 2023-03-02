@@ -60,11 +60,13 @@ public class MagicItems {
 	
 	public MagicItems() {}
 
-	public MagicItems(String itemName, String descr, String rarity, EquipmentCategory equipCategory,
+	public MagicItems(String indexName, String itemName, String descr, String rarity, String url,EquipmentCategory equipCategory,
 			SourceBook sourceBook) {
+		this.indexName = indexName;
 		this.itemName = itemName;
 		this.descr = descr;
 		this.rarity = rarity;
+		this.url = url;
 		this.equipCategory = equipCategory;
 		this.sourceBook = sourceBook;
 	}

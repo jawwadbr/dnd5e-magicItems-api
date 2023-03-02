@@ -4,27 +4,29 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.jawbr.dao.MagicItemsDAO;
+import com.jawbr.dao.MagicItemsRepository;
 import com.jawbr.entity.MagicItems;
 
 @Service
 public class MagicItemsServiceImpl implements MagicItemsService {
-
+	
 	@Autowired
-	private MagicItemsDAO magicItemsDAO;
+	private MagicItemsRepository magicItemsRepository;
 	
 	@Override
-	@Transactional
-	public List<MagicItems> getMagicItems() {
-		return magicItemsDAO.getMagicItems();
+	public List<MagicItems> findAll() {
+		return magicItemsRepository.findAll();
 	}
 
 	@Override
-	@Transactional(readOnly = true)
-	public MagicItems getMagicItem(String magicItemIndexName) {
-		return magicItemsDAO.getMagicItem(magicItemIndexName);
+	public MagicItems findByIndexName(String magicItemIndexName) {
+		return magicItemsRepository.findByIndexName(magicItemIndexName);
+	}
+
+	@Override
+	public void save(MagicItems magicItem) {
+		magicItemsRepository.save(magicItem);
 	}
 
 }

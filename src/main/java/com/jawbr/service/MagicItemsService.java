@@ -6,7 +6,9 @@ import com.jawbr.entity.MagicItems;
 
 public interface MagicItemsService {
 
-	public List<MagicItems> getMagicItems();
+	public List<MagicItems> findAll();
 
-	public MagicItems getMagicItem(String indexName);
+	public MagicItems findByIndexName(String indexName);
+	
+	public void save(MagicItems magicItem);
 }

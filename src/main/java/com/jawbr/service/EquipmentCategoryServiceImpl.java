@@ -1,30 +1,37 @@
 package com.jawbr.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.jawbr.dao.EquipmentCategoryDAO;
+import com.jawbr.dao.EquipmentCategoryRepository;
 import com.jawbr.entity.EquipmentCategory;
 
 @Service
 public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
 
 	@Autowired
-	private EquipmentCategoryDAO equipCategoryDAO;
+	private EquipmentCategoryRepository equipmentCategoryRepository;
 	
 	@Override
-	@Transactional
-	public List<EquipmentCategory> getAllEquipmentCategory() {
-		return equipCategoryDAO.getAllEquipmentCategory();
+	public List<EquipmentCategory> findAll() {
+		return equipmentCategoryRepository.findAll();
 	}
 
 	@Override
-	@Transactional(readOnly = true)
-	public EquipmentCategory getEquipmentCategory(int id) {
-		return equipCategoryDAO.getEquipmentCategory(id);
+	public EquipmentCategory findById(int id) {
+		
+		Optional<EquipmentCategory> result = equipmentCategoryRepository.findById(id);
+		
+		if(result.isPresent()) {
+			return result.get();
+		}
+		else {
+			throw new RuntimeException("Did not find Equipment Category id - " + id); // Add custom exception later
+		}
+		
 	}
 
 }
