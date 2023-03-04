@@ -11,4 +11,6 @@ public interface MagicItemsService {
 	public MagicItems findByIndexName(String indexName);
 	
 	public void save(MagicItems magicItem);
+
+	public MagicItems findById(int magicItemId);
 }

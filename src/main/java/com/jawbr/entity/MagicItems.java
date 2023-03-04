@@ -2,6 +2,7 @@ package com.jawbr.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.jawbr.jsonViews.NoIdView;
 
@@ -33,6 +34,7 @@ public class MagicItems {
 	@Column(name = "name")
 	private String itemName;
 	
+	@JsonIgnore
 	@Column(name = "descr")
 	private String descr;
 	
@@ -49,12 +51,12 @@ public class MagicItems {
 	private String url;
 	
 	@JsonView(NoIdView.class)
-	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name = "equipment_category_fk")
 	private EquipmentCategory equipCategory;
 	
 	@JsonView(NoIdView.class)
-	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name = "source_name_fk")
 	private SourceBook sourceBook;
 	
@@ -65,6 +67,19 @@ public class MagicItems {
 		this.indexName = indexName;
 		this.itemName = itemName;
 		this.descr = descr;
+		this.rarity = rarity;
+		this.url = url;
+		this.equipCategory = equipCategory;
+		this.sourceBook = sourceBook;
+	}
+
+	public MagicItems(int id, String indexName, String itemName, String descr, List<String> description, String rarity,
+			String url, EquipmentCategory equipCategory, SourceBook sourceBook) {
+		this.id = id;
+		this.indexName = indexName;
+		this.itemName = itemName;
+		this.descr = descr;
+		this.description = description;
 		this.rarity = rarity;
 		this.url = url;
 		this.equipCategory = equipCategory;
@@ -145,9 +160,9 @@ public class MagicItems {
 
 	@Override
 	public String toString() {
-		return "MagicItems [id=" + id + ", indexName=" + indexName + ", url=" + url + ", itemName=" + itemName
-				+ ", descr=" + description + ", rarity=" + rarity + ", equipCategory=" + equipCategory + ", sourceBook="
-				+ sourceBook + "]";
+		return "MagicItems [id=" + id + ", indexName=" + indexName + ", itemName=" + itemName + ", description="
+				+ description + ", rarity=" + rarity + ", url=" + url + ", equipCategory=" + equipCategory
+				+ ", sourceBook=" + sourceBook + "]";
 	}
 	
 }

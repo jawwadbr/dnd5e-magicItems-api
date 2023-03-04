@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import com.jawbr.jsonViews.NoIdView;
 import com.jawbr.service.EquipmentCategoryService;
 import com.jawbr.service.MagicItemsService;
 import com.jawbr.service.SourceBookService;
+import com.jawbr.utils.MergeDescription;
 import com.jawbr.utils.SplitDescr;
 
 @RestController
@@ -80,12 +82,19 @@ public class MagicItemsController {
 		return item;
 	}
 	/*
+	 * Endpoint POST
+	 * 
+	 * Create the magic item and save in the DB
+	 * 
 	 * JSON exemple
 	 * 
 	 *	{
 	 *	    "indexName": "test",
 	 *	    "itemName": "test",
-	 *	    "descr": "test\nnewlinedescr",
+	 *	    "description": [
+     *  		"test",
+     *  		"newlinedescr424242424"
+     *		],
 	 *	    "rarity": "Varies",
 	 *	    "url": "/api/magic-items/test",
 	 *	    "equipCategory": {
@@ -101,6 +110,12 @@ public class MagicItemsController {
 	 */
 	@PostMapping()
 	public MagicItems saveMagicItem(@RequestBody MagicItems magicItem) {
+		
+		if(magicItem.getDescription() != null && !magicItem.getDescription().isEmpty()) {
+		    magicItem.setDescr(MergeDescription.mergeDescription(magicItem.getDescription()));
+		} else {
+		    magicItem.setDescr("");
+		}
 		
 		// Fetch Equip and SourceBook entity
 		EquipmentCategory equipCat = equipmentCategoryService.findById(magicItem.getEquipCategory().getId());
@@ -118,9 +133,37 @@ public class MagicItemsController {
 		return magicItem;
 	}
 	
-	@PostMapping("/auth")
-	public String auth() {
-		return "Autorizado";
+	/*
+	 * Endpoint PUT
+	 * 
+	 * Update Magic Item
+	 * 
+	 */
+	@PutMapping()
+	public MagicItems updateMagicItem(@RequestBody MagicItems magicItem) {
+		
+		if(magicItem.getDescription() != null && !magicItem.getDescription().isEmpty()) {
+		    magicItem.setDescr(MergeDescription.mergeDescription(magicItem.getDescription()));
+		} else {
+		    magicItem.setDescr("");
+		}
+		
+		magicItemsService.save(magicItem);
+		
+		return magicItem;
 	}
 	
+	/*
+	 * Endpoint PUT "{magicItemId}"
+	 * 
+	 * Update Magic Item using PK Id
+	 * 
+	 */
+	
+	/*
+	 * Endpoint DELETE "{magicItemId}"
+	 * 
+	 * Delete Magic Item using PK Id
+	 * 
+	 */
 }

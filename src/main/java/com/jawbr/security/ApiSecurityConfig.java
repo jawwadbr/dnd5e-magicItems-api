@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -16,6 +17,7 @@ public class ApiSecurityConfig {
 	
 	@Bean
 	public InMemoryUserDetailsManager userDetailsManager() {
+		// In memory user for testing
 		UserDetails ADMIN = User.withUsername("admin").password("{noop}admin").roles("ADMIN").build();
 		
 		return new InMemoryUserDetailsManager(ADMIN);
@@ -25,8 +27,16 @@ public class ApiSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		
 		// should learn more about csrf 
-		http.csrf().disable().authorizeHttpRequests().requestMatchers(HttpMethod.POST, "/api/magic-items").hasRole("ADMIN")
-									.anyRequest().permitAll().and().httpBasic();
+		http.authorizeHttpRequests()
+				.requestMatchers(HttpMethod.POST, "/api/magic-items").hasRole("ADMIN")
+				.requestMatchers(HttpMethod.PUT, "/api/magic-items").hasRole("ADMIN")
+				.requestMatchers(HttpMethod.DELETE, "/api/magic-items").hasRole("ADMIN") // temp, need DELETE endpoint first
+				.anyRequest().permitAll()
+			.and()
+				.httpBasic()
+			.and()
+				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringRequestMatchers("/api/magic-items/**").ignoringRequestMatchers("/api/magic-items");
+		
 		return http.build();
 	}
 }
