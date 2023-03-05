@@ -3,15 +3,15 @@ package com.jawbr.exceptionHandler;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MagicItemsErrorResponse {
+public class MagicItemErrorResponse {
 
 	private int status;
 	private String message;
 	private String timeStamp;
 	
-	public MagicItemsErrorResponse() {}
+	public MagicItemErrorResponse() {}
 
-	public MagicItemsErrorResponse(int status, String message, long timeStamp) {
+	public MagicItemErrorResponse(int status, String message, long timeStamp) {
 		this.status = status;
 		this.message = message;
 		this.timeStamp = formatTimestamp(timeStamp);

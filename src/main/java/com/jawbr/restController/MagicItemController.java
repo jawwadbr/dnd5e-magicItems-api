@@ -1,7 +1,6 @@
 package com.jawbr.restController;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,31 +13,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.jawbr.customResponse.UpdateResponse;
+import com.jawbr.dto.MagicItemDTO;
 import com.jawbr.entity.EquipmentCategory;
-import com.jawbr.entity.MagicItems;
+import com.jawbr.entity.MagicItem;
 import com.jawbr.entity.SourceBook;
 import com.jawbr.exceptionHandler.MagicItemNotFoundException;
-import com.jawbr.jsonViews.NoIdView;
 import com.jawbr.service.EquipmentCategoryService;
-import com.jawbr.service.MagicItemsService;
+import com.jawbr.service.MagicItemService;
 import com.jawbr.service.SourceBookService;
 import com.jawbr.utils.MergeDescription;
-import com.jawbr.utils.SplitDescr;
 
 @RestController
 @RequestMapping("/api/magic-items")
-public class MagicItemsController {
+public class MagicItemController {
+	
+	// REMOVE ALL LOGIC FROM CONTROLLER SHOULD NOT BE HERE WHEN I CAN
 	
 	@Autowired
-	private MagicItemsService magicItemsService;
+	private MagicItemService magicItemsService;
 	
 	@Autowired
 	private EquipmentCategoryService equipmentCategoryService;
 	
 	@Autowired
 	private SourceBookService sourceBookService;
+	
 	
 	/**
 	 * GET ENDPOINT
@@ -48,13 +48,8 @@ public class MagicItemsController {
 	 * @throws MagicItemNotFoundException if the list of items is not found inside the db
 	 */
 	@GetMapping()
-	@JsonView(NoIdView.class)
-	public ResponseEntity<List<MagicItems>> getAllMagicItems() {
-		
-		List<MagicItems> items = magicItemsService.findAll();
-		SplitDescr.splitDescr(items);
-		
-		return ResponseEntity.ok(items);
+	public List<MagicItemDTO> getAllMagicItems() {
+		return magicItemsService.findAll();
 	}
 	
 	/**
@@ -65,13 +60,8 @@ public class MagicItemsController {
 	 * @throws MagicItemNotFoundException if the item is not found
 	 */
 	@GetMapping("/{magicItemIndexName}")
-	@JsonView(NoIdView.class)
-	public ResponseEntity<MagicItems> getMagicItemByIndexName(@PathVariable String magicItemIndexName) {
-		
-		MagicItems item = magicItemsService.findByIndexName(magicItemIndexName);
-		SplitDescr.splitDescr(item);
-		
-		return ResponseEntity.ok(item);
+	public MagicItemDTO getMagicItemByIndexName(@PathVariable String magicItemIndexName) {
+		return magicItemsService.findByIndexName(magicItemIndexName);
 	}
 	
 	/**
@@ -84,12 +74,8 @@ public class MagicItemsController {
 	 * @throws MagicItemNotFoundException if the item is not found
 	 */
 	@GetMapping("/id/{magicItemId}")
-	public ResponseEntity<MagicItems> getMagicItemById(@PathVariable int magicItemId) {
-		
-		MagicItems item = magicItemsService.findById(magicItemId);
-		SplitDescr.splitDescr(item);
-		
-		return ResponseEntity.ok(item);
+	public MagicItemDTO getMagicItemById(@PathVariable int magicItemId) {
+		return magicItemsService.findById(magicItemId);
 	}
 	
 	/*
@@ -120,9 +106,10 @@ public class MagicItemsController {
 	 *	    }
 	 *	}
 	 * 
+	 * 
 	 */
 	@PostMapping()
-	public ResponseEntity<MagicItems> saveMagicItem(@RequestBody MagicItems magicItem) {
+	public ResponseEntity<MagicItem> saveMagicItem(@RequestBody MagicItem magicItem) {
 		
 		if(magicItem.getDescription() != null && !magicItem.getDescription().isEmpty()) {
 		    magicItem.setDescr(MergeDescription.mergeDescription(magicItem.getDescription()));
@@ -131,11 +118,11 @@ public class MagicItemsController {
 		}
 		
 		// Fetch Equip and SourceBook entity
-		EquipmentCategory equipCat = equipmentCategoryService.findById(magicItem.getEquipCategory().getId());
+		EquipmentCategory equipCat = equipmentCategoryService.findById(magicItem.getEquipmentCategory().getId());
 		SourceBook srcBook = sourceBookService.findById(magicItem.getSourceBook().getId());
 		
 		// Attach entities to Item to persist
-		magicItem.setEquipCategory(equipCat);
+		magicItem.setEquipmentCategory(equipCat);
 		magicItem.setSourceBook(srcBook);
 		
 		// just in case the id is passed in JSON
@@ -155,7 +142,7 @@ public class MagicItemsController {
 	 * 
 	 */
 	@PutMapping()
-	public ResponseEntity<UpdateResponse> updateMagicItem(@RequestBody MagicItems magicItem) {
+	public ResponseEntity<UpdateResponse> updateMagicItem(@RequestBody MagicItem magicItem) {
 		
 		List<String> descriptions = magicItem.getDescription();
 		
@@ -180,32 +167,9 @@ public class MagicItemsController {
 	 * 
 	 * Update Magic Item using PK Id
 	 * 
+	 * Need to recreate
 	 */
-	@PutMapping("/{magicItemId}")
-	public ResponseEntity<UpdateResponse> updateMagicItem(@RequestBody MagicItems magicItem, @PathVariable int magicItemId) {
-		
-		MagicItems updatedItem = magicItemsService.findById(magicItemId);
-		
-		// Need to create a DTO for more clean code
-		updatedItem.setItemName(magicItem.getItemName());
-		updatedItem.setIndexName(magicItem.getIndexName());
-		updatedItem.setRarity(magicItem.getRarity());
-		updatedItem.setUrl(magicItem.getUrl());
-		updatedItem.setEquipCategory(magicItem.getEquipCategory());
-		updatedItem.setSourceBook(magicItem.getSourceBook());
-		
-		// Merge the descriptions of the new and existing magic items
-		String mergedDescr2 = MergeDescription.mergeDescription(magicItem.getDescription());
-		updatedItem.setDescr(Optional.ofNullable(mergedDescr2).orElse(""));
-		
-		// Save the updated Item
-		magicItemsService.save(updatedItem);
-		
-		UpdateResponse response = new UpdateResponse(String.valueOf(updatedItem.getId()), updatedItem.getUrl());
-		
-		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
-	
+
 	/*
 	 * Endpoint DELETE "{magicItemId}"
 	 * 

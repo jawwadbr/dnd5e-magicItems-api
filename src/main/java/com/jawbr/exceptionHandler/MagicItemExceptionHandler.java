@@ -10,18 +10,18 @@ public class MagicItemExceptionHandler {
 	
 	// Exception if item not found in DB
 	@ExceptionHandler
-	public ResponseEntity<MagicItemsErrorResponse> handleException(MagicItemNotFoundException exc) {
+	public ResponseEntity<MagicItemErrorResponse> handleException(MagicItemNotFoundException exc) {
 		
-		MagicItemsErrorResponse error = new MagicItemsErrorResponse(HttpStatus.NOT_FOUND.value(), exc.getMessage(), System.currentTimeMillis());
+		MagicItemErrorResponse error = new MagicItemErrorResponse(HttpStatus.NOT_FOUND.value(), exc.getMessage(), System.currentTimeMillis());
 		
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 	
 	// Generic for any exception 
 	@ExceptionHandler
-	public ResponseEntity<MagicItemsErrorResponse> handleException(Exception exc) {
+	public ResponseEntity<MagicItemErrorResponse> handleException(Exception exc) {
 		
-		MagicItemsErrorResponse error = new MagicItemsErrorResponse(HttpStatus.BAD_REQUEST.value(), exc.getMessage(), System.currentTimeMillis());
+		MagicItemErrorResponse error = new MagicItemErrorResponse(HttpStatus.BAD_REQUEST.value(), exc.getMessage(), System.currentTimeMillis());
 		
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
