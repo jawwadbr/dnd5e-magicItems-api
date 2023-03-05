@@ -1,7 +1,6 @@
 package com.jawbr.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +17,26 @@ public class MagicItemsServiceImpl implements MagicItemsService {
 	
 	@Override
 	public List<MagicItems> findAll() {
-		return magicItemsRepository.findAll();
+		
+		List<MagicItems> items = magicItemsRepository.findAll();
+		
+		if(items == null || items.isEmpty()) {
+			throw new MagicItemNotFoundException("No Magic Items found inside Database.");
+		}
+		
+		return items;
 	}
 
 	@Override
 	public MagicItems findByIndexName(String magicItemIndexName) {
-		return magicItemsRepository.findByIndexName(magicItemIndexName);
+		
+		MagicItems item = magicItemsRepository.findByIndexName(magicItemIndexName);
+		
+		if(item == null){
+			throw new MagicItemNotFoundException("Magic Item with Index Name '" + magicItemIndexName + "' not found.");
+		}
+		
+		return item;
 	}
 
 	@Override
@@ -33,16 +46,7 @@ public class MagicItemsServiceImpl implements MagicItemsService {
 
 	@Override
 	public MagicItems findById(int magicItemId) {
-		
-		Optional<MagicItems> result = magicItemsRepository.findById(magicItemId);
-		
-		if(result.isPresent()) {
-			return result.get();
-		}
-		else {
-			throw new MagicItemNotFoundException("Magic Item with id '" + magicItemId + "' not found");
-		}
-		
+		return magicItemsRepository.findById(magicItemId).orElseThrow(() -> new MagicItemNotFoundException("Magic Item with id '" + magicItemId + "' not found."));
 	}
 
 }

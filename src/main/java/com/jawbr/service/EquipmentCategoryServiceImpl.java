@@ -1,7 +1,6 @@
 package com.jawbr.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,16 +21,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
 
 	@Override
 	public EquipmentCategory findById(int id) {
-		
-		Optional<EquipmentCategory> result = equipmentCategoryRepository.findById(id);
-		
-		if(result.isPresent()) {
-			return result.get();
-		}
-		else {
-			throw new RuntimeException("Did not find Equipment Category id - " + id); // Add custom exception later
-		}
-		
+		return equipmentCategoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Did not find Equipment Category id - " + id)); // Add custom exception later
 	}
 
 }

@@ -28,7 +28,9 @@ public class ApiSecurityConfig {
 		
 		// should learn more about csrf 
 		http.authorizeHttpRequests()
+				.requestMatchers(HttpMethod.GET, "/api/magic-items/id/{magicItemId}").hasRole("ADMIN")
 				.requestMatchers(HttpMethod.POST, "/api/magic-items").hasRole("ADMIN")
+				.requestMatchers(HttpMethod.PUT, "/api/magic-items/{magicItemId}").hasRole("ADMIN")
 				.requestMatchers(HttpMethod.PUT, "/api/magic-items").hasRole("ADMIN")
 				.requestMatchers(HttpMethod.DELETE, "/api/magic-items").hasRole("ADMIN") // temp, need DELETE endpoint first
 				.anyRequest().permitAll()

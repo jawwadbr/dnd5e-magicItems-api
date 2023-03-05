@@ -1,8 +1,11 @@
 package com.jawbr.restController;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.jawbr.customResponse.UpdateResponse;
 import com.jawbr.entity.EquipmentCategory;
 import com.jawbr.entity.MagicItems;
 import com.jawbr.entity.SourceBook;
@@ -43,20 +47,14 @@ public class MagicItemsController {
 	 * 
 	 * @throws MagicItemNotFoundException if the list of items is not found inside the db
 	 */
-	@JsonView(NoIdView.class)
 	@GetMapping()
-	public List<MagicItems> getAllMagicItems() {
+	@JsonView(NoIdView.class)
+	public ResponseEntity<List<MagicItems>> getAllMagicItems() {
 		
 		List<MagicItems> items = magicItemsService.findAll();
-		
-		// Throw exception if no items found
-        if (items == null || items.isEmpty()) {
-            throw new MagicItemNotFoundException("No Magic Items found inside Database!");
-        }
-		
 		SplitDescr.splitDescr(items);
 		
-		return items;
+		return ResponseEntity.ok(items);
 	}
 	
 	/**
@@ -66,23 +64,38 @@ public class MagicItemsController {
 	 * 
 	 * @throws MagicItemNotFoundException if the item is not found
 	 */
-	@JsonView(NoIdView.class)
 	@GetMapping("/{magicItemIndexName}")
-	public MagicItems getMagicItem(@PathVariable String magicItemIndexName) {
+	@JsonView(NoIdView.class)
+	public ResponseEntity<MagicItems> getMagicItemByIndexName(@PathVariable String magicItemIndexName) {
 		
 		MagicItems item = magicItemsService.findByIndexName(magicItemIndexName);
-		
-		// Throw exception if no item found
-        if (item == null) {
-            throw new MagicItemNotFoundException("Magic Item with Index Name '" + magicItemIndexName + "' not found");
-        }
-		
 		SplitDescr.splitDescr(item);
 		
-		return item;
+		return ResponseEntity.ok(item);
 	}
+	
+	/**
+	 * Endpoint GET "/id/{magicItemId}"
+	 * 
+	 * Access restricted to ADMIN only.
+	 * 
+	 * Returns the magic item with the specified id
+	 * 
+	 * @throws MagicItemNotFoundException if the item is not found
+	 */
+	@GetMapping("/id/{magicItemId}")
+	public ResponseEntity<MagicItems> getMagicItemById(@PathVariable int magicItemId) {
+		
+		MagicItems item = magicItemsService.findById(magicItemId);
+		SplitDescr.splitDescr(item);
+		
+		return ResponseEntity.ok(item);
+	}
+	
 	/*
 	 * Endpoint POST
+	 * 
+	 * Access restricted to ADMIN only.
 	 * 
 	 * Create the magic item and save in the DB
 	 * 
@@ -109,7 +122,7 @@ public class MagicItemsController {
 	 * 
 	 */
 	@PostMapping()
-	public MagicItems saveMagicItem(@RequestBody MagicItems magicItem) {
+	public ResponseEntity<MagicItems> saveMagicItem(@RequestBody MagicItems magicItem) {
 		
 		if(magicItem.getDescription() != null && !magicItem.getDescription().isEmpty()) {
 		    magicItem.setDescr(MergeDescription.mergeDescription(magicItem.getDescription()));
@@ -130,38 +143,73 @@ public class MagicItemsController {
 		
 		magicItemsService.save(magicItem);
 		
-		return magicItem;
+		return new ResponseEntity<>(magicItem, HttpStatus.CREATED);
 	}
 	
 	/*
 	 * Endpoint PUT
 	 * 
+	 * Access restricted to ADMIN only.
+	 * 
 	 * Update Magic Item
 	 * 
 	 */
 	@PutMapping()
-	public MagicItems updateMagicItem(@RequestBody MagicItems magicItem) {
+	public ResponseEntity<UpdateResponse> updateMagicItem(@RequestBody MagicItems magicItem) {
 		
-		if(magicItem.getDescription() != null && !magicItem.getDescription().isEmpty()) {
-		    magicItem.setDescr(MergeDescription.mergeDescription(magicItem.getDescription()));
+		List<String> descriptions = magicItem.getDescription();
+		
+		if(descriptions != null && !descriptions.isEmpty()) {
+			String mergedDescr = MergeDescription.mergeDescription(descriptions);
+		    magicItem.setDescr(mergedDescr);
 		} else {
 		    magicItem.setDescr("");
 		}
 		
 		magicItemsService.save(magicItem);
 		
-		return magicItem;
+		UpdateResponse response = new UpdateResponse(String.valueOf(magicItem.getId()), magicItem.getUrl());
+		
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	/*
-	 * Endpoint PUT "{magicItemId}"
+	 * Endpoint PUT "/{magicItemId}"
+	 * 
+	 * Access restricted to ADMIN only.
 	 * 
 	 * Update Magic Item using PK Id
 	 * 
 	 */
+	@PutMapping("/{magicItemId}")
+	public ResponseEntity<UpdateResponse> updateMagicItem(@RequestBody MagicItems magicItem, @PathVariable int magicItemId) {
+		
+		MagicItems updatedItem = magicItemsService.findById(magicItemId);
+		
+		// Need to create a DTO for more clean code
+		updatedItem.setItemName(magicItem.getItemName());
+		updatedItem.setIndexName(magicItem.getIndexName());
+		updatedItem.setRarity(magicItem.getRarity());
+		updatedItem.setUrl(magicItem.getUrl());
+		updatedItem.setEquipCategory(magicItem.getEquipCategory());
+		updatedItem.setSourceBook(magicItem.getSourceBook());
+		
+		// Merge the descriptions of the new and existing magic items
+		String mergedDescr2 = MergeDescription.mergeDescription(magicItem.getDescription());
+		updatedItem.setDescr(Optional.ofNullable(mergedDescr2).orElse(""));
+		
+		// Save the updated Item
+		magicItemsService.save(updatedItem);
+		
+		UpdateResponse response = new UpdateResponse(String.valueOf(updatedItem.getId()), updatedItem.getUrl());
+		
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 	
 	/*
 	 * Endpoint DELETE "{magicItemId}"
+	 * 
+	 * Access restricted to ADMIN only.
 	 * 
 	 * Delete Magic Item using PK Id
 	 * 
