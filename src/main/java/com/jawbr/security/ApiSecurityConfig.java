@@ -35,9 +35,11 @@ public class ApiSecurityConfig {
 				.requestMatchers(HttpMethod.DELETE, "/api/magic-items").hasRole("ADMIN") // temp, need DELETE endpoint first
 				.anyRequest().permitAll()
 			.and()
+				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringRequestMatchers("/api/magic-items/**").ignoringRequestMatchers("/api/magic-items")
+			.and()
 				.httpBasic()
 			.and()
-				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringRequestMatchers("/api/magic-items/**").ignoringRequestMatchers("/api/magic-items");
+				.formLogin();
 		
 		return http.build();
 	}

@@ -11,7 +11,10 @@ public interface MagicItemService {
 
 	public MagicItemDTO findByIndexName(String indexName);
 	
-	public void save(MagicItem magicItem);
-
 	public MagicItemDTO findById(int magicItemId);
+	
+	void save(MagicItemDTO magicItem);
+	
+	public void update(MagicItem magicItem);
+
 }

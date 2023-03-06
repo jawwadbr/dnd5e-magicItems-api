@@ -61,4 +61,15 @@ public class MagicItemDTOMapper implements Function<MagicItem, MagicItemDTO>{
 		return results;
 	}
 
+	public MagicItem toEntity(MagicItemDTO magicItem) {
+		
+		MagicItem magicItemEntity = new MagicItem(magicItem.indexName(), 
+				magicItem.itemName(), 
+				magicItem.description(),
+				magicItem.rarity(), 
+				magicItem.url());
+		
+		return magicItemEntity;
+	}
+
 }

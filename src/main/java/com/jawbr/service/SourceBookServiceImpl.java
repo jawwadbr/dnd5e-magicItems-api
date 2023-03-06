@@ -11,8 +11,12 @@ import com.jawbr.entity.SourceBook;
 @Service
 public class SourceBookServiceImpl implements SourceBookService {
 	
+	private final SourceBookRepository sourceBookRepository;
+	
 	@Autowired
-	private SourceBookRepository sourceBookRepository;
+	public SourceBookServiceImpl(SourceBookRepository sourceBookRepository) {
+		this.sourceBookRepository = sourceBookRepository;
+	}
 
 	@Override
 	public List<SourceBook> findAll() {

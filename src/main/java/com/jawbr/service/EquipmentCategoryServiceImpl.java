@@ -11,9 +11,13 @@ import com.jawbr.entity.EquipmentCategory;
 @Service
 public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
 
-	@Autowired
-	private EquipmentCategoryRepository equipmentCategoryRepository;
+	private final EquipmentCategoryRepository equipmentCategoryRepository;
 	
+	@Autowired
+	public EquipmentCategoryServiceImpl(EquipmentCategoryRepository equipmentCategoryRepository) {
+		this.equipmentCategoryRepository = equipmentCategoryRepository;
+	}
+
 	@Override
 	public List<EquipmentCategory> findAll() {
 		return equipmentCategoryRepository.findAll();

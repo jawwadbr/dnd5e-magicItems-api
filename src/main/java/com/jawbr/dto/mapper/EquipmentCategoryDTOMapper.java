@@ -9,7 +9,7 @@ public class EquipmentCategoryDTOMapper implements Function<EquipmentCategory, E
 
 	@Override
 	public EquipmentCategoryDTO apply(EquipmentCategory equipmentCategory) {
-		return new EquipmentCategoryDTO(equipmentCategory.getCategoryName());
+		return new EquipmentCategoryDTO(equipmentCategory.getIndexName(), equipmentCategory.getCategoryName());
 	}
 
 }

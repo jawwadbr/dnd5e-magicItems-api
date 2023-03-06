@@ -77,6 +77,15 @@ public class MagicItem {
 		this.sourceBook = sourceBook;
 	}
 
+	public MagicItem(String indexName, String itemName, List<String> description, String rarity,
+			String url) {
+		this.indexName = indexName;
+		this.itemName = itemName;
+		this.description = description;
+		this.rarity = rarity;
+		this.url = url;
+	}
+
 	public int getId() {
 		return id;
 	}
