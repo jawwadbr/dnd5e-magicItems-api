@@ -1,5 +1,7 @@
 package com.jawbr.dao;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +14,7 @@ import jakarta.transaction.Transactional;
 public interface MagicItemRepository extends JpaRepository<MagicItem, Integer> {
 
 	// method to find by indexName, JPA will provide all the code
-	public MagicItem findByIndexName(String indexName);
+	public Optional<MagicItem> findByIndexName(String indexName);
 
 	@Modifying
 	@Transactional

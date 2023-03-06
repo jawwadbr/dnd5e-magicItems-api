@@ -39,7 +39,7 @@ public class MagicItemController {
 	 */
 	@GetMapping()
 	public List<MagicItemDTO> getAllMagicItems() {
-		return magicItemsService.findAll();
+		return magicItemsService.findAllMagicItems();
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class MagicItemController {
 	 */
 	@GetMapping("/{magicItemIndexName}")
 	public MagicItemDTO getMagicItemByIndexName(@PathVariable String magicItemIndexName) {
-		return magicItemsService.findByIndexName(magicItemIndexName);
+		return magicItemsService.findMagicItemByIndexName(magicItemIndexName);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class MagicItemController {
 	 */
 	@GetMapping("/id/{magicItemId}")
 	public MagicItemDTO getMagicItemById(@PathVariable int magicItemId) {
-		return magicItemsService.findById(magicItemId);
+		return magicItemsService.findMagicItemById(magicItemId);
 	}
 	
 	/*

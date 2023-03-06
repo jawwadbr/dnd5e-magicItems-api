@@ -1,6 +1,7 @@
 package com.jawbr.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,8 @@ import com.jawbr.utils.MergeDescription;
 public class MagicItemServiceImpl implements MagicItemService {
 	
 	private final MagicItemRepository magicItemsRepository;
-	
 	private final EquipmentCategoryRepository equipmentCategoryRepository;
-	
 	private final SourceBookRepository sourceBookRepository;
-	
 	private final MagicItemDTOMapper magicItemDTOMapper;
 	
 	@Autowired
@@ -40,36 +38,24 @@ public class MagicItemServiceImpl implements MagicItemService {
 	}
 	
 	@Override
-	public List<MagicItemDTO> findAll() {
-		
-		List<MagicItem> items = magicItemsRepository.findAll();
-		
-		if(items == null || items.isEmpty()) {
-			throw new MagicItemNotFoundException("No Magic Items found inside Database.");
-		}
-		
-		return magicItemDTOMapper.mapToDto(items);
+	public List<MagicItemDTO> findAllMagicItems() {
+		return Optional.ofNullable(magicItemsRepository.findAll())
+				.map(item -> magicItemDTOMapper.mapToDto(item))
+				.filter(list -> !list.isEmpty())
+				.orElseThrow(() -> new MagicItemNotFoundException("No Magic Items found inside Database."));
 	}
 
 	@Override
-	public MagicItemDTO findByIndexName(String magicItemIndexName) {
-		
-		MagicItem item = magicItemsRepository.findByIndexName(magicItemIndexName);
-		
-		if(item == null){
-			throw new MagicItemNotFoundException("Magic Item with Index Name '" + magicItemIndexName + "' not found.");
-		}
-		
-		return magicItemDTOMapper.mapToDto(item);
+	public MagicItemDTO findMagicItemByIndexName(String magicItemIndexName) {
+		return magicItemsRepository.findByIndexName(magicItemIndexName)
+				.map((MagicItem item) -> magicItemDTOMapper.mapToDto(item))
+				.orElseThrow(() -> new MagicItemNotFoundException("Magic Item with Index Name '" + magicItemIndexName + "' not found."));
 	}
 	
 	@Override
-	public MagicItemDTO findById(int magicItemId) {
-		
-		MagicItemDTO item = magicItemsRepository.findById(magicItemId).map(magicItemDTOMapper)
+	public MagicItemDTO findMagicItemById(int magicItemId) {
+		return magicItemsRepository.findById(magicItemId).map(magicItemDTOMapper)
 				.orElseThrow(() -> new MagicItemNotFoundException("Magic Item with id '" + magicItemId + "' not found."));
-		
-		return item;
 	}
 
 	@Override

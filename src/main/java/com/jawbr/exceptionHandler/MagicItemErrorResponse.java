@@ -43,7 +43,7 @@ public class MagicItemErrorResponse {
 	
 	private String formatTimestamp(long timeStamp) {
         Date date = new Date(timeStamp);
-        SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss a");
         return formatter.format(date);
     }
 	

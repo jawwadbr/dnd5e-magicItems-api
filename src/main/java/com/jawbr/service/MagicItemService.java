@@ -7,11 +7,11 @@ import com.jawbr.entity.MagicItem;
 
 public interface MagicItemService {
 
-	public List<MagicItemDTO> findAll();
+	public List<MagicItemDTO> findAllMagicItems();
 
-	public MagicItemDTO findByIndexName(String indexName);
+	public MagicItemDTO findMagicItemByIndexName(String indexName);
 	
-	public MagicItemDTO findById(int magicItemId);
+	public MagicItemDTO findMagicItemById(int magicItemId);
 	
 	void save(MagicItemDTO magicItem);
 	
