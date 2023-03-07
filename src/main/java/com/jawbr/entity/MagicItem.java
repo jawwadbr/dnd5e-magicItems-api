@@ -2,8 +2,7 @@ package com.jawbr.entity;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.jawbr.jsonViews.NoIdView;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,55 +17,73 @@ import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "magic_items")
-public class MagicItems {
+public class MagicItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
 	
-	@JsonView(NoIdView.class)
 	@Column(name = "indexname")
 	private String indexName;
 	
-	@JsonView(NoIdView.class)
 	@Column(name = "name")
 	private String itemName;
 	
+	@JsonIgnore
 	@Column(name = "descr")
 	private String descr;
 	
-	@JsonView(NoIdView.class)
 	@Transient
 	private List<String> description;
 	
-	@JsonView(NoIdView.class)
 	@Column(name = "rarity")
 	private String rarity;
 	
-	@JsonView(NoIdView.class)
 	@Column(name = "url")
 	private String url;
 	
-	@JsonView(NoIdView.class)
-	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name = "equipment_category_fk")
-	private EquipmentCategory equipCategory;
+	private EquipmentCategory equipmentCategory;
 	
-	@JsonView(NoIdView.class)
-	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name = "source_name_fk")
 	private SourceBook sourceBook;
 	
-	public MagicItems() {}
+	public MagicItem() {}
 
-	public MagicItems(String itemName, String descr, String rarity, EquipmentCategory equipCategory,
+	public MagicItem(String indexName, String itemName, String descr, String rarity, String url,EquipmentCategory equipmentCategory,
 			SourceBook sourceBook) {
+		this.indexName = indexName;
 		this.itemName = itemName;
 		this.descr = descr;
 		this.rarity = rarity;
-		this.equipCategory = equipCategory;
+		this.url = url;
+		this.equipmentCategory = equipmentCategory;
 		this.sourceBook = sourceBook;
+	}
+
+	public MagicItem(int id, String indexName, String itemName, String descr, List<String> description, String rarity,
+			String url, EquipmentCategory equipmentCategory, SourceBook sourceBook) {
+		this.id = id;
+		this.indexName = indexName;
+		this.itemName = itemName;
+		this.descr = descr;
+		this.description = description;
+		this.rarity = rarity;
+		this.url = url;
+		this.equipmentCategory = equipmentCategory;
+		this.sourceBook = sourceBook;
+	}
+
+	public MagicItem(String indexName, String itemName, List<String> description, String rarity,
+			String url) {
+		this.indexName = indexName;
+		this.itemName = itemName;
+		this.description = description;
+		this.rarity = rarity;
+		this.url = url;
 	}
 
 	public int getId() {
@@ -117,12 +134,12 @@ public class MagicItems {
 		this.url = url;
 	}
 
-	public EquipmentCategory getEquipCategory() {
-		return equipCategory;
+	public EquipmentCategory getEquipmentCategory() {
+		return equipmentCategory;
 	}
 
-	public void setEquipCategory(EquipmentCategory equipCategory) {
-		this.equipCategory = equipCategory;
+	public void setEquipmentCategory(EquipmentCategory equipmentCategory) {
+		this.equipmentCategory = equipmentCategory;
 	}
 
 	public SourceBook getSourceBook() {
@@ -143,9 +160,9 @@ public class MagicItems {
 
 	@Override
 	public String toString() {
-		return "MagicItems [id=" + id + ", indexName=" + indexName + ", url=" + url + ", itemName=" + itemName
-				+ ", descr=" + description + ", rarity=" + rarity + ", equipCategory=" + equipCategory + ", sourceBook="
-				+ sourceBook + "]";
+		return "MagicItems [id=" + id + ", indexName=" + indexName + ", itemName=" + itemName + ", description="
+				+ description + ", rarity=" + rarity + ", url=" + url + ", equipmentCategory=" + equipmentCategory
+				+ ", sourceBook=" + sourceBook + "]";
 	}
 	
 }

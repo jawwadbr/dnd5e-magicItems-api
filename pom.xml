@@ -8,8 +8,8 @@
 		<version>3.0.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com</groupId>
-	<artifactId>jawbr</artifactId>
+	<groupId>com.jawbr</groupId>
+	<artifactId>dnd5e-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>dnd5e-api</name>
 	<description>D&amp;D 5E API</description>
@@ -42,6 +42,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

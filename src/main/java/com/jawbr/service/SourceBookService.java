@@ -6,7 +6,7 @@ import com.jawbr.entity.SourceBook;
 
 public interface SourceBookService {
 	
-	public List<SourceBook> getAllSourceBook();
+	public List<SourceBook> findAll();
 	
-	public SourceBook getSourceBook(int id);
+	public SourceBook findById(int id);
 }
