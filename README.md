@@ -45,6 +45,7 @@ The API will be available at `http://localhost:8080/api/magic-items`.
 The following endpoints are available for non-admin users:
 
 `GET /api/magic-items` - Retrieve a list of all magic items.
+
 `GET /api/magic-items/{magicItemIndexName}` - Retrieve a specific magic item by its index name.
 
 The following endpoints are available for admin users:
