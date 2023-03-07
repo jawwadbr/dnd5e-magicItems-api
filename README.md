@@ -10,8 +10,13 @@ This is a project that implements a REST API for retrieving, creating, updating,
 - Spring Security
 - JPA
 - Maven
+- MySQL Database
 
+### About Database
 
+The project is built using MySQL database to store and manage data of the magic items. To help you get started, a sample SQL files is provided in [sql-sample](https://github.com/jawwadbr/dnd5e-magicItems-api/tree/main/sql-sample). The files contains the database schema, structure and data for testing the API.
+
+Don't forget to set up a MySQL server locally in your machine to be able to run the database to test the API.
 ## Getting Started
 
 To get started with this project, follow these steps:
