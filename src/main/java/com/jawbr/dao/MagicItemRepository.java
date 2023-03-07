@@ -26,6 +26,6 @@ public interface MagicItemRepository extends JpaRepository<MagicItem, Integer> {
     		+ "m.equipmentCategory = :#{#magicItem.equipmentCategory}, "
     		+ "m.sourceBook = :#{#magicItem.sourceBook} "
     		+ "WHERE m.id = :#{#magicItem.id}")
-    public void update(@Param("magicItem") MagicItem magicItem);
+    public void update(@Param("magicItem") Optional<MagicItem> magicItem);
 	
 }

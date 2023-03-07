@@ -1,10 +1,12 @@
 package com.jawbr.restController;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jawbr.customResponse.UpdateResponse;
+import com.jawbr.customResponse.CustomResponse;
 import com.jawbr.dto.MagicItemDTO;
 import com.jawbr.entity.MagicItem;
 import com.jawbr.exceptionHandler.MagicItemNotFoundException;
@@ -36,6 +38,8 @@ public class MagicItemController {
 	 * Returns a list of all magic items
 	 * 
 	 * @throws MagicItemNotFoundException if the list of items is not found inside the db
+	 * 
+	 * @RequestParam(required = false) Integer page
 	 */
 	@GetMapping()
 	public List<MagicItemDTO> getAllMagicItems() {
@@ -87,11 +91,10 @@ public class MagicItemController {
 	 *	    "rarity": "Varies",
 	 *	    "url": "/api/magic-items/test",
 	 *	    "equipmentCategory": {
-	 *	        "id" : 1,
+	 *	        "indexName": "armor",
 	 *	        "categoryName": "Armor"
 	 *	    },
 	 *	    "sourceBook": {
-	 *	        "id" : 2,
 	 *	        "sourceName": "Dungeon Master’s Guide"
 	 *	    }
 	 *	}
@@ -99,9 +102,11 @@ public class MagicItemController {
 	 * 
 	 */
 	@PostMapping()
-	public ResponseEntity<UpdateResponse> saveMagicItem(@RequestBody MagicItemDTO magicItem) {
+	public ResponseEntity<CustomResponse> saveMagicItem(@RequestBody MagicItemDTO magicItem) {
 		magicItemsService.save(magicItem);
-		UpdateResponse response = new UpdateResponse(String.valueOf(magicItem.indexName()), magicItem.url());
+		CustomResponse response = new CustomResponse(HttpStatus.CREATED.value(),
+				magicItem.url(), 
+				System.currentTimeMillis());
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
@@ -112,12 +117,35 @@ public class MagicItemController {
 	 * 
 	 * Update Magic Item
 	 * 
-	 * NEED TO UPDATE PUT TO USE DTO
+	 * JSON exemple
+	 * 
+	 *	{
+	 *		"id" : 1,
+	 *	    "indexName": "test",
+	 *	    "itemName": "test",
+	 *	    "description": [
+     *  		"test",
+     *  		"newlinedescr424242424"
+     *		],
+	 *	    "rarity": "Varies",
+	 *	    "url": "/api/magic-items/test",
+	 *	    "equipmentCategory": {
+	 *	        "indexName": "armor",
+	 *	        "categoryName": "Armor"
+	 *	    },
+	 *	    "sourceBook": {
+	 *	        "sourceName": "Dungeon Master’s Guide"
+	 *	    }
+	 *	}
+	 * 
+	 * I will no longer use DTO in PUT. I might change that later, but since only admins have access to this, I might let it be like this. I need to think about it more carefully later
 	 */
 	@PutMapping()
-	public ResponseEntity<UpdateResponse> updateMagicItem(@RequestBody MagicItem magicItem) {
+	public ResponseEntity<CustomResponse> updateMagicItem(@RequestBody Optional<MagicItem> magicItem) {
 		magicItemsService.update(magicItem);
-		UpdateResponse response = new UpdateResponse(String.valueOf(magicItem.getId()), magicItem.getUrl());
+		CustomResponse response = new CustomResponse(HttpStatus.OK.value(), 
+				magicItem.get().getUrl(), 
+				System.currentTimeMillis());
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
@@ -131,9 +159,11 @@ public class MagicItemController {
 	 *
 	 */
 	@PutMapping("/{magicItemId}")
-	public ResponseEntity<UpdateResponse> updateMagicItem(@RequestBody MagicItem magicItem, @PathVariable int magicItemId) {
+	public ResponseEntity<CustomResponse> updateMagicItem(@RequestBody Optional<MagicItem> magicItem, @PathVariable int magicItemId) {
 		magicItemsService.update(magicItem);
-		UpdateResponse response = new UpdateResponse(String.valueOf(magicItem.getId()), magicItem.getUrl());
+		CustomResponse response = new CustomResponse(HttpStatus.OK.value(), 
+				magicItem.get().getUrl(), 
+				System.currentTimeMillis());
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -145,4 +175,9 @@ public class MagicItemController {
 	 * Delete Magic Item using PK Id
 	 * 
 	 */
+	@DeleteMapping("/{magicItemId}")
+	public ResponseEntity<Void> deleteMagicItem(@PathVariable int magicItemId) {
+		magicItemsService.deleteMagicItem(magicItemId);
+		return ResponseEntity.noContent().build();
+	}
 }

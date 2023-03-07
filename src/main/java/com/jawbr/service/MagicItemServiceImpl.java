@@ -14,6 +14,7 @@ import com.jawbr.dto.mapper.MagicItemDTOMapper;
 import com.jawbr.entity.EquipmentCategory;
 import com.jawbr.entity.MagicItem;
 import com.jawbr.entity.SourceBook;
+import com.jawbr.exceptionHandler.MagicItemBadRequestException;
 import com.jawbr.exceptionHandler.MagicItemNotFoundException;
 import com.jawbr.utils.MergeDescription;
 
@@ -39,10 +40,20 @@ public class MagicItemServiceImpl implements MagicItemService {
 	
 	@Override
 	public List<MagicItemDTO> findAllMagicItems() {
+		
 		return Optional.ofNullable(magicItemsRepository.findAll())
 				.map(item -> magicItemDTOMapper.mapToDto(item))
 				.filter(list -> !list.isEmpty())
 				.orElseThrow(() -> new MagicItemNotFoundException("No Magic Items found inside Database."));
+		/*
+		 * if(pageNumber == null) { pageNumber= 0; } Page<MagicItemDTO>
+		 * magicItemPageResult =
+		 * Optional.ofNullable(magicItemsRepository.findAll(PageRequest.of(pageNumber,
+		 * 1))) .map(item -> item.map(magicItemDTOMapper::mapToDto)) .filter(list ->
+		 * !list.isEmpty()) .orElseThrow(() -> new
+		 * MagicItemNotFoundException("No Magic Items found inside Database.")); return
+		 * magicItemPageResult.getContent();
+		 */
 	}
 
 	@Override
@@ -63,11 +74,10 @@ public class MagicItemServiceImpl implements MagicItemService {
 		
 		MagicItem newMagicItem = magicItemDTOMapper.toEntity(magicItemDto);
 		
-		if(newMagicItem.getDescription() != null && !newMagicItem.getDescription().isEmpty()) {
-			newMagicItem.setDescr(MergeDescription.mergeDescription(newMagicItem.getDescription()));
-		} else {
-			newMagicItem.setDescr("");
-		}
+		newMagicItem.setDescr(Optional.ofNullable(newMagicItem.getDescription())
+				.filter(description -> !description.isEmpty())
+				.map(MergeDescription::mergeDescription)
+				.orElse(""));
 		
 		// Attach entities to Item to persist
 		EquipmentCategory equipCat = equipmentCategoryRepository.findByIndexName(magicItemDto.equipmentCategory().indexName())
@@ -86,19 +96,27 @@ public class MagicItemServiceImpl implements MagicItemService {
 	}
 
 	@Override
-	public void update(MagicItem magicItem) {
+	public void update(Optional<MagicItem> magicItem) {
+		magicItem.ifPresentOrElse(item -> {
+			item.setDescr(Optional.ofNullable(item.getDescription())
+					.filter(description -> !description.isEmpty())
+					.map(MergeDescription::mergeDescription)
+					.orElseThrow(() -> new IllegalArgumentException("Description cannot be empty.")));
+			 magicItemsRepository.update(Optional.of(item));
+		}, () -> {
+			throw new MagicItemBadRequestException("Invalid JSON received. Magic Item cannot be null or empty.", 
+					System.currentTimeMillis());
+		});
 		
-		List<String> descriptions = magicItem.getDescription();
-		 
-		if(descriptions != null && !descriptions.isEmpty()) { 
-			String mergedDescr = MergeDescription.mergeDescription(descriptions);
-			magicItem.setDescr(mergedDescr); 
-		} 
-		else {
-			magicItem.setDescr(""); 
-		}
-		
-		magicItemsRepository.update(magicItem);
+	}
+
+	@Override
+	public void deleteMagicItem(int magicItemId) {
+		magicItemsRepository.findById(magicItemId)
+			.ifPresentOrElse(
+					magicItem -> magicItemsRepository.delete(magicItem),
+					() -> {throw new MagicItemNotFoundException("Magic Item with Id " + magicItemId + " not found.");}
+					);
 	}
 
 }
