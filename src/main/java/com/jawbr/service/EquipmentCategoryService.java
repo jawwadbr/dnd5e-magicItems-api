@@ -1,12 +1,8 @@
 package com.jawbr.service;
 
-import java.util.List;
+import org.springframework.stereotype.Service;
 
-import com.jawbr.entity.EquipmentCategory;
+@Service
+public class EquipmentCategoryService { // TODO
 
-public interface EquipmentCategoryService {
-	
-	public List<EquipmentCategory> findAll();
-	
-	public EquipmentCategory findById(int id);
 }

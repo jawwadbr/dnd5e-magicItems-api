@@ -6,57 +6,31 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "equipment_category")
 public class EquipmentCategory {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private int id;
-	
-	@Column(name = "indexname")
-	private String indexName;
-	
-	@Column(name = "name")
-	private String categoryName;
-	
-	public EquipmentCategory() {}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "")
+    private int id;
 
-	public EquipmentCategory(int id, String indexName, String categoryName) {
-		this.id = id;
-		this.indexName = indexName;
-		this.categoryName = categoryName;
-	}
+    @Column(name = "index_name")
+    private String indexName;
 
-	public int getId() {
-		return id;
-	}
+    @Column(name = "equip_name")
+    private String equipmentName;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    @Column(name = "url")
+    private String url;
 
-	public String getIndexName() {
-		return indexName;
-	}
-
-	public void setIndexName(String indexName) {
-		this.indexName = indexName;
-	}
-
-	public String getCategoryName() {
-		return categoryName;
-	}
-
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
-
-	@Override
-	public String toString() {
-		return categoryName;
-	}
-	
 }

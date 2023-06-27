@@ -1,12 +1,8 @@
 package com.jawbr.service;
 
-import java.util.List;
+import org.springframework.stereotype.Service;
 
-import com.jawbr.entity.SourceBook;
+@Service
+public class SourceBookService { // TODO
 
-public interface SourceBookService {
-	
-	public List<SourceBook> findAll();
-	
-	public SourceBook findById(int id);
 }
