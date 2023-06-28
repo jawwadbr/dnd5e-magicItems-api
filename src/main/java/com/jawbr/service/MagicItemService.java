@@ -9,16 +9,17 @@ import com.jawbr.entity.EquipmentCategory;
 import com.jawbr.entity.MagicItem;
 import com.jawbr.entity.SourceBook;
 import com.jawbr.exception.EquipmentCategoryNotFoundException;
-import com.jawbr.exception.MagicItemIntegrityConstraintViolationException;
+import com.jawbr.exception.IntegrityConstraintViolationException;
 import com.jawbr.exception.MagicItemNotFoundException;
+import com.jawbr.exception.RarityEnumInvalidException;
 import com.jawbr.exception.SourceBookExceptionNotFound;
 import com.jawbr.repository.EquipmentCategoryRepository;
 import com.jawbr.repository.MagicItemRepository;
 import com.jawbr.repository.SourceBookRepository;
+import com.jawbr.utils.Rarity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,12 @@ public class MagicItemService {
     private final SourceBookRepository sourceBookRepository;
     private final Slugify slugify;
 
-    public MagicItemService(MagicItemRepository magicItemRepository, EquipmentCategoryRepository equipmentCategoryRepository, SourceBookRepository sourceBookRepository) {
+    private static final String MAGIC_URL = "/api/magic-items/";
+
+    public MagicItemService(MagicItemRepository magicItemRepository,
+                            EquipmentCategoryRepository equipmentCategoryRepository,
+                            SourceBookRepository sourceBookRepository)
+    {
         this.magicItemRepository = magicItemRepository;
         this.equipmentCategoryRepository = equipmentCategoryRepository;
         this.sourceBookRepository = sourceBookRepository;
@@ -60,12 +66,8 @@ public class MagicItemService {
     }
 
     public MagicItemDTO createMagicItem(MagicItemRequest magicItemRequest) {
-        if(Optional.ofNullable(magicItemRepository.findByIndexName(slugify.slugify(magicItemRequest.itemName()))).isPresent()) {
-            throw new MagicItemIntegrityConstraintViolationException(
-                    String.format(
-                            "Duplicated magic item. The item '%s' already exists.",
-                            magicItemRequest.itemName()));
-        }
+        isMagicItemDuplicated(magicItemRequest);
+        isMagicItemHaveValidRarity(magicItemRequest.rarity());
 
         MagicItem item = mapToEntity(magicItemRequest);
         item.setEquipmentCategory(
@@ -87,12 +89,7 @@ public class MagicItemService {
                         String.format("Magic item with id '%d' not found.", id)
                 ));
 
-        if(Optional.ofNullable(magicItemRepository.findByIndexName(slugify.slugify(magicItemRequest.itemName()))).isPresent()) {
-            throw new MagicItemIntegrityConstraintViolationException(
-                    String.format(
-                            "Duplicated magic item. The item '%s' already exists.",
-                            magicItemRequest.itemName()));
-        }
+        isMagicItemDuplicated(magicItemRequest);
 
         final String itemName = StringUtils.hasText(magicItemRequest.itemName()) ? magicItemRequest.itemName() : item.getItemName();
         final String topDescr = StringUtils.hasText(magicItemRequest.topDescr()) ? magicItemRequest.topDescr() : item.getTopDescr();
@@ -107,6 +104,8 @@ public class MagicItemService {
                 magicItemRequest.sourceName()) ?
                 magicItemRequest.sourceName() : item.getSourceBook().getSourceName();
 
+        isMagicItemHaveValidRarity(rarity);
+
         EquipmentCategory equip = getEquipCategoryFromRequest(equipName, itemName);
         SourceBook book = getSourceBookFromRequest(bookName, itemName);
 
@@ -120,7 +119,7 @@ public class MagicItemService {
                 .sourceBook(book)
                 .build();
         updatedMagicItem.setIndexName(slugify.slugify(updatedMagicItem.getItemName()));
-        updatedMagicItem.setUrl("/api/magic-item/" + updatedMagicItem.getIndexName());
+        updatedMagicItem.setUrl(MAGIC_URL + updatedMagicItem.getIndexName());
 
         magicItemRepository.save(updatedMagicItem);
 
@@ -169,7 +168,7 @@ public class MagicItemService {
                 .rarity(magicItemRequest.rarity())
                 .build();
         magicItem.setIndexName(slugify.slugify(magicItem.getItemName()));
-        magicItem.setUrl("/api/magic-item/" + magicItem.getIndexName());
+        magicItem.setUrl(MAGIC_URL + magicItem.getIndexName());
         return magicItem;
     }
 
@@ -177,7 +176,7 @@ public class MagicItemService {
         String equipIndexName = slugify.slugify(equipName);
         return Optional.ofNullable(equipmentCategoryRepository.findByIndexName(equipIndexName))
                 .orElseThrow(() -> new EquipmentCategoryNotFoundException(
-                        String.format("Cannot update the Magic Item '%s' because the equipment category with name '%s' was not found.",
+                        String.format("Cannot create or update the Magic Item '%s' because the equipment category with name '%s' was not found.",
                                 itemName,
                                 equipName)));
     }
@@ -186,8 +185,30 @@ public class MagicItemService {
         String sourceBookIndexName = slugify.slugify(sourceName);
         return Optional.ofNullable(sourceBookRepository.findByIndexName(sourceBookIndexName))
                 .orElseThrow(() -> new SourceBookExceptionNotFound(
-                        String.format("Cannot update the Magic Item '%s' because the source book with name '%s' not found",
+                        String.format("Cannot create or update the Magic Item '%s' because the source book with name '%s' not found",
                                 itemName,
                                 sourceName)));
+    }
+
+    private void isMagicItemDuplicated(MagicItemRequest magicItemRequest) {
+        if(Optional.ofNullable(magicItemRepository.findByIndexName(slugify.slugify(magicItemRequest.itemName()))).isPresent()) {
+            throw new IntegrityConstraintViolationException(
+                    String.format(
+                            "Duplicated magic item. Cannot create or update because the item '%s' already exists.",
+                            magicItemRequest.itemName()));
+        }
+    }
+
+    private void isMagicItemHaveValidRarity(String itemRarity) {
+        boolean isValid = false;
+        for(Rarity rarity : Rarity.values()) {
+            if(rarity.name().equalsIgnoreCase(itemRarity)) {
+                isValid = true;
+                break;
+            }
+        }
+        if(!isValid) {
+            throw new RarityEnumInvalidException(String.format("Rarity '%s' is invalid. Use a valid rarity.", itemRarity));
+        }
     }
 }
