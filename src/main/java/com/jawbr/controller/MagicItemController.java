@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/magic-item")
+@RequestMapping("/api/magic-items")
 public class MagicItemController {
 
-    public final MagicItemService magicItemService;
+    private final MagicItemService magicItemService;
 
     public MagicItemController(MagicItemService magicItemService) {
         this.magicItemService = magicItemService;
@@ -32,7 +32,6 @@ public class MagicItemController {
         return magicItemService.findAllMagicItems();
     }
 
-    // TODO jakarta.persistence.NonUniqueResultException: query did not return a unique result: 2 | FIX
     @GetMapping("/{indexName}")
     public MagicItemDTO findMagicItemByIndexName(@PathVariable String indexName) {
         return magicItemService.findMagicItemByIndexName(indexName);
@@ -46,17 +45,19 @@ public class MagicItemController {
     }
 
     @PostMapping
-    public ResponseEntity<MagicItemDTO> createMagicItem(@Valid @RequestBody MagicItemRequest magicItemRequest) {
+    public ResponseEntity<MagicItemDTO> createMagicItem(
+            @Valid @RequestBody MagicItemRequest magicItemRequest) {
         MagicItemDTO response = magicItemService.createMagicItem(magicItemRequest);
-        return new ResponseEntity<>(response ,HttpStatus.CREATED);
+        return new ResponseEntity<>(response , HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public MagicItemDTO editMagicItem(@PathVariable int id, @RequestBody MagicItemRequest magicItemRequest) {
+    public MagicItemDTO updateMagicItem(
+            @PathVariable int id, @RequestBody MagicItemRequest magicItemRequest) {
         return magicItemService.updateMagicItem(id, magicItemRequest);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMagicItemById(@PathVariable int id) {
         magicItemService.deleteMagicItemById(id);
         return ResponseEntity.noContent().build();

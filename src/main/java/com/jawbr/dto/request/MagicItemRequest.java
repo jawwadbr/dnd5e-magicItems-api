@@ -8,6 +8,6 @@ public record MagicItemRequest(
         @NotBlank(message = "Description cannot be empty!") String descr,
         @NotBlank(message = "Rarity of the item cannot be empty") String rarity,
         @NotBlank(message = "Equipment Category name cannot be empty!") String equipmentName,
-        @NotBlank(message = "The source book cannot be empty") String sourceName
+        @NotBlank(message = "The source book name cannot be empty") String sourceName
 ) {
 }
