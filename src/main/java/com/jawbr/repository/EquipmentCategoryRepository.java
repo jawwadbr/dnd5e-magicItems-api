@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EquipmentCategoryRepository extends JpaRepository<EquipmentCategory, Integer> {
 
+    EquipmentCategory findByIndexName(String indexName);
 }

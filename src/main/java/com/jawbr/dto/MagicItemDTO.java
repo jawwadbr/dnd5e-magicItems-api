@@ -11,7 +11,7 @@ public record MagicItemDTO(
         String topDescr,
         String descr,
         String rarity,
-        EquipmentCategoryDTO equipmentName,
-        SourceBookDTO sourceName,
+        EquipmentCategoryDTO equipmentType,
+        SourceBookDTO sourceBook,
         String url) {
 }

@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SourceBookRepository extends JpaRepository<SourceBook, Integer> {
 
+    SourceBook findByIndexName(String indexName);
 }

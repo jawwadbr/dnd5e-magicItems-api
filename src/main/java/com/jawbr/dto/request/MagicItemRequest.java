@@ -7,7 +7,7 @@ public record MagicItemRequest(
         @NotBlank(message = "Top Description cannot be empty!") String topDescr,
         @NotBlank(message = "Description cannot be empty!") String descr,
         @NotBlank(message = "Rarity of the item cannot be empty") String rarity,
-        EquipmentCategoryRequest equipmentName,
-        SourceBookRequest sourceName
+        @NotBlank(message = "Equipment Category name cannot be empty!") String equipmentName,
+        @NotBlank(message = "The source book cannot be empty") String sourceName
 ) {
 }
