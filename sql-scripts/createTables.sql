@@ -12,9 +12,10 @@ create table `source_book` (
 
 create table `equipment_category` (
 	`id` int not null primary key auto_increment,
-	`index_name` tinytext NOT NULL,
+	`index_name` varchar(128) NOT NULL,
     `equip_name` tinytext NOT NULL,
-    `url` tinytext NOT NULL
+    `url` tinytext NOT NULL,
+	UNIQUE KEY `unique_index_name` (`index_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 create table `magic_item` (
