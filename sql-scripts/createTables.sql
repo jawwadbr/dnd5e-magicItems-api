@@ -28,6 +28,7 @@ create table `magic_item` (
     `equipment_category_fk` int DEFAULT NULL,
     `source_name_fk` int DEFAULT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `unique_index_name` (`index_name`),
     KEY `fk_source_name` (`source_name_fk`),
     KEY `fk_equipment_category` (`equipment_category_fk`),
     CONSTRAINT `fk_equipment_category` FOREIGN KEY (`equipment_category_fk`) REFERENCES `equipment_category` (`id`),
