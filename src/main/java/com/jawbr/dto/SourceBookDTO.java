@@ -1,7 +1,11 @@
 package com.jawbr.dto;
 
-public record SourceBookDTO (
-		String sourceName
-		) {
+import lombok.Builder;
 
+@Builder
+public record SourceBookDTO(
+        String indexName,
+        String sourceName,
+        String url
+) {
 }

@@ -6,46 +6,30 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "source_book")
 public class SourceBook {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private int id;
-	
-	@Column(name = "source_name")
-	private String sourceName;
-	
-	public SourceBook() {}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
 
-	public SourceBook(int id, String sourceName) {
-		this.id = id;
-		this.sourceName = sourceName;
-	}
+    @Column(name = "index_name")
+    private String indexName;
 
-	public int getId() {
-		return id;
-	}
+    @Column(name = "source_name")
+    private String sourceName;
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getSourceName() {
-		return sourceName;
-	}
-
-	public void setSourceName(String sourceName) {
-		this.sourceName = sourceName;
-	}
-
-	@Override
-	public String toString() {
-		return sourceName;
-	}
-	
-	
+    @Column(name = "url")
+    private String url;
 }
