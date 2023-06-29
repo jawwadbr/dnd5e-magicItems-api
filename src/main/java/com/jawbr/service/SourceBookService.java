@@ -46,14 +46,14 @@ public class SourceBookService {
         return bookList.map(this::mapToDto);
     }
 
-    public SourceBookDTO getSourceBookByIndexName(String indexName) {
+    public SourceBookDTO findSourceBookByIndexName(String indexName) {
         SourceBook book = Optional.ofNullable(sourceBookRepository.findByIndexName(indexName))
                 .orElseThrow(() -> new SourceBookExceptionNotFound(
                         String.format("Source book with index name '%s' not found", indexName)));
         return mapToDto(book);
     }
 
-    public SourceBookDTO getSourceBookById(int id) {
+    public SourceBookDTO findSourceBookById(int id) {
         SourceBook book = sourceBookRepository.findById(id)
                 .orElseThrow(() -> new SourceBookExceptionNotFound(
                         String.format("Source book with index name '%d' not found", id)));

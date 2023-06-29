@@ -47,14 +47,14 @@ public class EquipmentCategoryService {
         return equipmentCategoryList.map(this::mapToDto);
     }
 
-    public EquipmentCategoryDTO getEquipCategoryByIndexName(String indexName) {
+    public EquipmentCategoryDTO findEquipCategoryByIndexName(String indexName) {
         EquipmentCategory equip = Optional.ofNullable(equipmentCategoryRepository.findByIndexName(indexName))
                 .orElseThrow(() -> new EquipmentCategoryNotFoundException(
                         String.format("Equipment Category with index name %s not found", indexName)));
         return mapToDto(equip);
     }
 
-    public EquipmentCategoryDTO getEquipCategoryById(int id) {
+    public EquipmentCategoryDTO findEquipCategoryById(int id) {
         EquipmentCategory equip = equipmentCategoryRepository.findById(id)
                 .orElseThrow(() -> new EquipmentCategoryNotFoundException(
                         String.format("Equipment Category with id '%d' not found", id)));

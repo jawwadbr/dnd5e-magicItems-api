@@ -39,14 +39,14 @@ public class EquipmentCategoryController {
 
     @GetMapping("/{indexName}")
     public EquipmentCategoryDTO findEquipCategoryByIndexName(@PathVariable String indexName) {
-        return equipmentCategoryService.getEquipCategoryByIndexName(indexName);
+        return equipmentCategoryService.findEquipCategoryByIndexName(indexName);
     }
 
     // All endpoints below can only be accessed by ADMIN role
 
     @GetMapping("/id/{id}")
     public EquipmentCategoryDTO findEquipCategoryById(@PathVariable int id) {
-        return equipmentCategoryService.getEquipCategoryById(id);
+        return equipmentCategoryService.findEquipCategoryById(id);
     }
 
     @PostMapping

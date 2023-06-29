@@ -39,14 +39,14 @@ public class SourceBookController {
 
     @GetMapping("/{indexName}")
     public SourceBookDTO findSourceBookByIndexName(@PathVariable String indexName) {
-        return sourceBookService.getSourceBookByIndexName(indexName);
+        return sourceBookService.findSourceBookByIndexName(indexName);
     }
 
     // All endpoints below can only be accessed by ADMIN role
 
     @GetMapping("/id/{id}")
     public SourceBookDTO findSourceBookById(@PathVariable int id) {
-        return sourceBookService.getSourceBookById(id);
+        return sourceBookService.findSourceBookById(id);
     }
 
     @PostMapping
