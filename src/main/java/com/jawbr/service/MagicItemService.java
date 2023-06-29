@@ -17,10 +17,12 @@ import com.jawbr.repository.EquipmentCategoryRepository;
 import com.jawbr.repository.MagicItemRepository;
 import com.jawbr.repository.SourceBookRepository;
 import com.jawbr.utils.Rarity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,11 +45,22 @@ public class MagicItemService {
         this.slugify = Slugify.builder().build();
     }
 
-    public List<MagicItemDTO> findAllMagicItems() { // TODO try to add pagination. Maybe add filter by name too ?
-        List<MagicItem> itemList = Optional.of(magicItemRepository.findAll())
+    public Page<MagicItemDTO> findAllMagicItems(Integer page, Integer pageSize, String sortBy) {
+        // limits pageSize to 200
+        pageSize = Math.min(Optional.ofNullable(pageSize).orElse(15), 200);
+        sortBy = Optional.ofNullable(sortBy)
+                .filter(s -> !s.isEmpty())
+                .orElse("id");
+        Page<MagicItem> itemList = Optional.of(
+                        magicItemRepository.findAll(
+                                PageRequest.of(
+                                        Optional.ofNullable(page).orElse(0),
+                                        pageSize,
+                                        Sort.Direction.ASC,
+                                        sortBy)))
                 .filter(list -> !list.isEmpty())
-                .orElseThrow(() -> new MagicItemNotFoundException("No magic items found inside Database."));
-        return itemList.stream().map(this::mapToDto).toList();
+                .orElseThrow(() -> new MagicItemNotFoundException("No magic items found."));
+        return itemList.map(this::mapToDto);
     }
 
     public MagicItemDTO findMagicItemByIndexName(String indexName) {
@@ -185,7 +198,7 @@ public class MagicItemService {
         String sourceBookIndexName = slugify.slugify(sourceName);
         return Optional.ofNullable(sourceBookRepository.findByIndexName(sourceBookIndexName))
                 .orElseThrow(() -> new SourceBookExceptionNotFound(
-                        String.format("Cannot create or update the Magic Item '%s' because the source book with name '%s' not found",
+                        String.format("Cannot create or update the Magic Item '%s' because the source book with name '%s' was not found",
                                 itemName,
                                 sourceName)));
     }

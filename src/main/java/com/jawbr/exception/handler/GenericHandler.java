@@ -3,6 +3,7 @@ package com.jawbr.exception.handler;
 import com.jawbr.exception.IntegrityConstraintViolationException;
 import com.jawbr.exception.RarityEnumInvalidException;
 import com.jawbr.exception.errorResponse.ErrorResponse;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -34,6 +35,12 @@ public class GenericHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(RarityEnumInvalidException.class)
     public ResponseEntity<ErrorResponse> handleException(RarityEnumInvalidException exc) {
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exc.getMessage(), System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ErrorResponse> handleException(PropertyReferenceException exc) {
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exc.getMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }

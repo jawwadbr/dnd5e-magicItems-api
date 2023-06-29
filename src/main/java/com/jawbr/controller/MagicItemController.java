@@ -4,6 +4,7 @@ import com.jawbr.dto.MagicItemDTO;
 import com.jawbr.dto.request.MagicItemRequest;
 import com.jawbr.service.MagicItemService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/magic-items")
@@ -28,8 +28,13 @@ public class MagicItemController {
     }
 
     @GetMapping
-    public List<MagicItemDTO> findAllMagicItems() {
-        return magicItemService.findAllMagicItems();
+    public Page<MagicItemDTO> findAllMagicItems(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String sortBy
+    )
+    {
+        return magicItemService.findAllMagicItems(page, pageSize, sortBy);
     }
 
     @GetMapping("/{indexName}")
@@ -46,14 +51,16 @@ public class MagicItemController {
 
     @PostMapping
     public ResponseEntity<MagicItemDTO> createMagicItem(
-            @Valid @RequestBody MagicItemRequest magicItemRequest) {
+            @Valid @RequestBody MagicItemRequest magicItemRequest)
+    {
         MagicItemDTO response = magicItemService.createMagicItem(magicItemRequest);
-        return new ResponseEntity<>(response , HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
     public MagicItemDTO updateMagicItem(
-            @PathVariable int id, @RequestBody MagicItemRequest magicItemRequest) {
+            @PathVariable int id, @RequestBody MagicItemRequest magicItemRequest)
+    {
         return magicItemService.updateMagicItem(id, magicItemRequest);
     }
 

@@ -4,6 +4,7 @@ import com.jawbr.dto.SourceBookDTO;
 import com.jawbr.dto.request.SourceBookRequest;
 import com.jawbr.service.SourceBookService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/source-books")
@@ -28,8 +28,13 @@ public class SourceBookController {
     }
 
     @GetMapping
-    public List<SourceBookDTO> findAllSourceBooks() {
-        return sourceBookService.findAllSourceBooks();
+    public Page<SourceBookDTO> findAllSourceBooks(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String sortBy
+    )
+    {
+        return sourceBookService.findAllSourceBooks(page, pageSize, sortBy);
     }
 
     @GetMapping("/{indexName}")
@@ -46,7 +51,8 @@ public class SourceBookController {
 
     @PostMapping
     public ResponseEntity<SourceBookDTO> createSourceBook(
-            @Valid @RequestBody SourceBookRequest sourceBookRequest) {
+            @Valid @RequestBody SourceBookRequest sourceBookRequest)
+    {
         SourceBookDTO response =
                 sourceBookService.createSourceBook(sourceBookRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -54,7 +60,8 @@ public class SourceBookController {
 
     @PatchMapping("/{id}")
     public SourceBookDTO updateSourceBook(
-            @PathVariable int id, @RequestBody SourceBookRequest sourceBookRequest) {
+            @PathVariable int id, @RequestBody SourceBookRequest sourceBookRequest)
+    {
         return sourceBookService.updateSourceBook(id, sourceBookRequest);
     }
 

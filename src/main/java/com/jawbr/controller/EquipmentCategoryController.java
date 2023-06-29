@@ -4,6 +4,7 @@ import com.jawbr.dto.EquipmentCategoryDTO;
 import com.jawbr.dto.request.EquipmentCategoryRequest;
 import com.jawbr.service.EquipmentCategoryService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/equipment-categories")
@@ -28,8 +28,13 @@ public class EquipmentCategoryController {
     }
 
     @GetMapping
-    public List<EquipmentCategoryDTO> findAllEquipCategory() {
-        return equipmentCategoryService.findAllEquipCategory();
+    public Page<EquipmentCategoryDTO> findAllEquipCategory(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String sortBy)
+    {
+
+        return equipmentCategoryService.findAllEquipCategory(page, pageSize, sortBy);
     }
 
     @GetMapping("/{indexName}")
@@ -46,7 +51,8 @@ public class EquipmentCategoryController {
 
     @PostMapping
     public ResponseEntity<EquipmentCategoryDTO> createEquipCategory(
-            @Valid @RequestBody EquipmentCategoryRequest equipmentCategoryRequest) {
+            @Valid @RequestBody EquipmentCategoryRequest equipmentCategoryRequest)
+    {
         EquipmentCategoryDTO response =
                 equipmentCategoryService.createEquipCategory(equipmentCategoryRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -54,7 +60,8 @@ public class EquipmentCategoryController {
 
     @PatchMapping("/{id}")
     public EquipmentCategoryDTO updateEquipCategory(
-            @PathVariable int id, @RequestBody EquipmentCategoryRequest equipmentCategoryRequest) {
+            @PathVariable int id, @RequestBody EquipmentCategoryRequest equipmentCategoryRequest)
+    {
         return equipmentCategoryService.updateEquipCategory(id, equipmentCategoryRequest);
     }
 

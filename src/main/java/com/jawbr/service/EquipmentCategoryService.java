@@ -7,10 +7,12 @@ import com.jawbr.entity.EquipmentCategory;
 import com.jawbr.exception.EquipmentCategoryNotFoundException;
 import com.jawbr.exception.IntegrityConstraintViolationException;
 import com.jawbr.repository.EquipmentCategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,12 +28,23 @@ public class EquipmentCategoryService {
         this.slugify = Slugify.builder().build();
     }
 
-    public List<EquipmentCategoryDTO> findAllEquipCategory() {
-        List<EquipmentCategory> equipmentCategoryList = Optional.of(equipmentCategoryRepository.findAll())
+    public Page<EquipmentCategoryDTO> findAllEquipCategory(Integer page, Integer pageSize, String sortBy) {
+        // limits pageSize to 200
+        pageSize = Math.min(Optional.ofNullable(pageSize).orElse(15), 200);
+        sortBy = Optional.ofNullable(sortBy)
+                .filter(s -> !s.isEmpty())
+                .orElse("id");
+        Page<EquipmentCategory> equipmentCategoryList = Optional.of(
+                        equipmentCategoryRepository.findAll(
+                                PageRequest.of(
+                                        Optional.ofNullable(page).orElse(0),
+                                        pageSize,
+                                        Sort.Direction.ASC,
+                                        sortBy)))
                 .filter(list -> !list.isEmpty())
                 .orElseThrow(() -> new EquipmentCategoryNotFoundException(
-                        "No Equipment Category found inside database"));
-        return equipmentCategoryList.stream().map(this::mapToDto).toList();
+                        "No Equipment Category found."));
+        return equipmentCategoryList.map(this::mapToDto);
     }
 
     public EquipmentCategoryDTO getEquipCategoryByIndexName(String indexName) {
@@ -70,7 +83,7 @@ public class EquipmentCategoryService {
                 .equipmentName(equipName)
                 .indexName(slugify.slugify(equipName))
                 .build();
-        updatedEquip.setUrl(EQUIP_URL+updatedEquip.getIndexName());
+        updatedEquip.setUrl(EQUIP_URL + updatedEquip.getIndexName());
 
         equipmentCategoryRepository.save(updatedEquip);
 
@@ -100,7 +113,7 @@ public class EquipmentCategoryService {
         EquipmentCategory equip = EquipmentCategory.builder()
                 .equipmentName(equipmentCategoryRequest.equipmentName()).build();
         equip.setIndexName(slugify.slugify(equip.getEquipmentName()));
-        equip.setUrl(EQUIP_URL+equip.getIndexName());
+        equip.setUrl(EQUIP_URL + equip.getIndexName());
         return equip;
     }
 
@@ -113,4 +126,5 @@ public class EquipmentCategoryService {
                             equipmentCategoryRequest.equipmentName()));
         }
     }
+
 }

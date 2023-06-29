@@ -7,10 +7,12 @@ import com.jawbr.entity.SourceBook;
 import com.jawbr.exception.IntegrityConstraintViolationException;
 import com.jawbr.exception.SourceBookExceptionNotFound;
 import com.jawbr.repository.SourceBookRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,12 +28,22 @@ public class SourceBookService {
         this.slugify = Slugify.builder().build();
     }
 
-    public List<SourceBookDTO> findAllSourceBooks() {
-        List<SourceBook> bookList = Optional.of(sourceBookRepository.findAll())
+    public Page<SourceBookDTO> findAllSourceBooks(Integer page, Integer pageSize, String sortBy) {
+        // limits pageSize to 200
+        pageSize = Math.min(Optional.ofNullable(pageSize).orElse(15), 200);
+        sortBy = Optional.ofNullable(sortBy)
+                .filter(s -> !s.isEmpty())
+                .orElse("id");
+        Page<SourceBook> bookList = Optional.of(sourceBookRepository.findAll(
+                        PageRequest.of(
+                                Optional.ofNullable(page).orElse(0),
+                                pageSize,
+                                Sort.Direction.ASC,
+                                sortBy)))
                 .filter(list -> !list.isEmpty())
                 .orElseThrow(() -> new SourceBookExceptionNotFound(
-                        "No source books found inside database."));
-        return bookList.stream().map(this::mapToDto).toList();
+                        "No source books found."));
+        return bookList.map(this::mapToDto);
     }
 
     public SourceBookDTO getSourceBookByIndexName(String indexName) {
