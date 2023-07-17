@@ -24,6 +24,8 @@ Dungeons and Dragons 5th edition.
 - [Java 17](https://docs.oracle.com/en/java/javase/17/)
 - [Spring Boot v3.1.1](https://spring.io/projects/spring-boot)
 - [Spring Data JPA](https://docs.spring.io/spring-data/data-jpa/docs/current/reference/html/#repositories)
+- [Spring Security](https://docs.spring.io/spring-security/reference/index.html)
+- [JSON Web Token](https://jwt.io/introduction)
 - [Lombok](https://projectlombok.org/features/)
 - [Slugify](https://github.com/slugify/slugify)
 - [MySQL](https://dev.mysql.com/doc/)
@@ -49,7 +51,9 @@ The API will be available at [localhost:8080](http://localhost:8080).
 
 ## API Endpoints
 
-To make the HTTP request below just for testing, [Postman](https://www.postman.com) tool was used:
+-- NEED TO ADD LOGIN ENDPOINTS IN README -- 
+
+To make the HTTP request below, [Postman](https://www.postman.com) tool was used:
 
 ### Public Endpoints
 
@@ -68,7 +72,7 @@ To make the HTTP request below just for testing, [Postman](https://www.postman.c
 - GET /api/source-books?page=?&pageSize=?&sortBy=? (Parameters are optional, you can remove if needed)
 - GET /api/source-books/{indexName}
 
-### Authenticated Endpoints (SECURITY NEED IMPLEMENTATION, ALL ENDPOINTS BELOW ARE AVAILABLE TO ALL)
+### Authenticated Endpoints
 
 #### Magic Items Endpoints
 

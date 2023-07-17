@@ -1,7 +1,5 @@
 package com.jawbr.dto;
 
-import com.jawbr.dto.request.EquipmentCategoryRequest;
-import com.jawbr.dto.request.SourceBookRequest;
 import lombok.Builder;
 
 @Builder

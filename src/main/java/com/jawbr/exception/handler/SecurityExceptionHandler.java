@@ -1,6 +1,7 @@
 package com.jawbr.exception.handler;
 
 import com.jawbr.exception.InvalidPasswordException;
+import com.jawbr.exception.UserAccountDeactivatedException;
 import com.jawbr.exception.errorResponse.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,13 @@ public class SecurityExceptionHandler {
 
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exc.getMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserAccountDeactivatedException.class)
+    public ResponseEntity<ErrorResponse> handleException(UserAccountDeactivatedException exc) {
+
+        ErrorResponse error = new ErrorResponse(HttpStatus.FORBIDDEN.value(), exc.getMessage(), System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
 }
