@@ -24,7 +24,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(config ->
                 config
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                         // Magic Items
                         .requestMatchers(HttpMethod.GET,"/api/magic-items", "/api/magic-items/{indexName}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/magic-items/id/{id}").hasRole("ADMIN")

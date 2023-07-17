@@ -1,6 +1,6 @@
 package com.jawbr.security.jwt;
 
-import com.jawbr.dto.request.LoginRequest;
+import com.jawbr.dto.request.UserRequest;
 import com.jawbr.entity.AuthRole;
 import com.jawbr.entity.User;
 import com.jawbr.exception.InvalidPasswordException;
@@ -28,7 +28,7 @@ public class JwtUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.getByUsername(username);
+        User user = userService.findByUsername(username);
 
         if(user == null) {
             throw new UsernameNotFoundException("Invalid username!");
@@ -39,7 +39,7 @@ public class JwtUserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
-    public void verifyUserCredentials(LoginRequest loginRequest) {
+    public void verifyUserCredentials(UserRequest loginRequest) {
         UserDetails user = loadUserByUsername(loginRequest.username());
 
         boolean passwordIsEqual = passwordEncoder.matches(loginRequest.password(), user.getPassword());
