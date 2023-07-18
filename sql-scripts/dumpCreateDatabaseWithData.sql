@@ -81,6 +81,31 @@ INSERT INTO `magic_item` VALUES (1,'armor','Armor, +1, +2, or +3','Armor (light,
 UNLOCK TABLES;
 
 --
+-- Table structure for table `role`
+--
+
+DROP TABLE IF EXISTS `role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `role` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `role` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_role` (`role`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `role`
+--
+
+LOCK TABLES `role` WRITE;
+/*!40000 ALTER TABLE `role` DISABLE KEYS */;
+INSERT INTO `role` VALUES (2,'ROLE_ADMIN'),(1,'ROLE_USER');
+/*!40000 ALTER TABLE `role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `source_book`
 --
 
@@ -106,6 +131,61 @@ LOCK TABLES `source_book` WRITE;
 INSERT INTO `source_book` VALUES (1,'dungeon-masters-guide','Dungeon Master’s Guide','/api/source-books/dungeon-masters-guide'),(2,'players-handbook','Players Handbook','/api/source-books/players-handbook');
 /*!40000 ALTER TABLE `source_book` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user_detail`
+--
+
+DROP TABLE IF EXISTS `user_detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_detail` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(128) NOT NULL,
+  `password` char(80) NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `active` tinyint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_detail`
+--
+
+LOCK TABLES `user_detail` WRITE;
+/*!40000 ALTER TABLE `user_detail` DISABLE KEYS */;
+INSERT INTO `user_detail` VALUES (1,'admin','$2a$10$WeNZqs6KNAnQtBNHsGzBhu5duUI0cc3QQnP1rRdFZg63GG3YpONu.','2023-06-21 22:26:21',1);
+/*!40000 ALTER TABLE `user_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_role`
+--
+
+DROP TABLE IF EXISTS `user_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_role` (
+  `user_id` int NOT NULL,
+  `role_id` int NOT NULL,
+  PRIMARY KEY (`user_id`,`role_id`),
+  KEY `role_id` (`role_id`),
+  CONSTRAINT `user_role_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_detail` (`id`),
+  CONSTRAINT `user_role_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_role`
+--
+
+LOCK TABLES `user_role` WRITE;
+/*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
+INSERT INTO `user_role` VALUES (1,1),(1,2);
+/*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -116,4 +196,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-28  3:03:03
+-- Dump completed on 2023-07-16 22:31:21

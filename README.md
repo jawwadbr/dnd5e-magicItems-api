@@ -10,13 +10,15 @@ Dungeons and Dragons 5th edition.
     * [Locally](https://github.com/jawwadbr/dnd5e-magicItems-api#locally)
 - [API Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#api-endpoints)
     * [Public Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#magic-items-endpoints)
+      * [Authentication Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#authentication-endpoints)
       * [Magic Items Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#magic-items-endpoints)
       * [Equipment Categories Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#equipment-categories-endpoints)
       * [Source Books Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#source-books-endpoints)
-    * [Authenticated Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#authenticated-endpoints-security-need-implementation-all-endpoints-below-are-available-to-all)
+    * [Authenticated Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#authenticated-endpoints)
       * [Magic Items Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#magic-items-endpoints-1)
       * [Equipment Categories Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#equipment-categories-endpoints-1)
       * [Source Books Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#source-books-endpoints-1)
+      * [User Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#user-endpoints)
 - [Additional Information](https://github.com/jawwadbr/dnd5e-magicItems-api#additional-information)
 
 ## Technologies
@@ -24,6 +26,8 @@ Dungeons and Dragons 5th edition.
 - [Java 17](https://docs.oracle.com/en/java/javase/17/)
 - [Spring Boot v3.1.1](https://spring.io/projects/spring-boot)
 - [Spring Data JPA](https://docs.spring.io/spring-data/data-jpa/docs/current/reference/html/#repositories)
+- [Spring Security](https://docs.spring.io/spring-security/reference/index.html)
+- [JSON Web Token](https://jwt.io/introduction)
 - [Lombok](https://projectlombok.org/features/)
 - [Slugify](https://github.com/slugify/slugify)
 - [MySQL](https://dev.mysql.com/doc/)
@@ -49,9 +53,34 @@ The API will be available at [localhost:8080](http://localhost:8080).
 
 ## API Endpoints
 
-To make the HTTP request below just for testing, [Postman](https://www.postman.com) tool was used:
+To make the HTTP request below, [Postman](https://www.postman.com) tool was used:
 
 ### Public Endpoints
+
+#### Authentication Endpoints
+
+Use this endpoint to authenticate and get a Access Token for the [Authenticated Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#authenticated-endpoints). Type of the authentication is Bearer Token.
+
+- POST /api/auth/login
+```
+{
+    "username": "admin",
+    "password": "admin"
+}
+
+# Response
+
+{
+    "accessToken": "<TheAccessToken>"
+}
+```
+- POST /api/auth/register (By default, when a user is created, their role is set as "User")
+```
+{
+    "username": "user",
+    "password": "user"
+}
+```
 
 #### Magic Items Endpoints
 
@@ -68,7 +97,7 @@ To make the HTTP request below just for testing, [Postman](https://www.postman.c
 - GET /api/source-books?page=?&pageSize=?&sortBy=? (Parameters are optional, you can remove if needed)
 - GET /api/source-books/{indexName}
 
-### Authenticated Endpoints (SECURITY NEED IMPLEMENTATION, ALL ENDPOINTS BELOW ARE AVAILABLE TO ALL)
+### Authenticated Endpoints
 
 #### Magic Items Endpoints
 
@@ -142,6 +171,11 @@ To make the HTTP request below just for testing, [Postman](https://www.postman.c
 ```
 
 - DELETE /api/source-books/{id}
+
+##### User Endpoints
+
+- GET /api/user?page=?&pageSize=?&sortBy=? (Parameters are optional, you can remove if needed)
+- GET /api/user/{username}
 
 ## Additional Information
 
