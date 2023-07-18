@@ -84,17 +84,17 @@ Use this endpoint to authenticate and get a Access Token for the [Authenticated 
 
 #### Magic Items Endpoints
 
-- GET /api/magic-items?page=?&pageSize=?&sortBy=? (Parameters are optional, you can remove if needed)
+- GET /api/magic-items?page=?&pageSize=?&sortBy=? (The parameters are optional and can be omitted if not required)
 - GET /api/magic-items/{indexName}
 
 ##### Equipment Categories Endpoints
 
-- GET /api/equipment-categories?page=?&pageSize=?&sortBy=? (Parameters are optional, you can remove if needed)
+- GET /api/equipment-categories?page=?&pageSize=?&sortBy=? (The parameters are optional and can be omitted if not required)
 - GET /api/equipment-categories/{indexName}
 
 ##### Source Books Endpoints
 
-- GET /api/source-books?page=?&pageSize=?&sortBy=? (Parameters are optional, you can remove if needed)
+- GET /api/source-books?page=?&pageSize=?&sortBy=? (The parameters are optional and can be omitted if not required)
 - GET /api/source-books/{indexName}
 
 ### Authenticated Endpoints
@@ -174,7 +174,7 @@ Use this endpoint to authenticate and get a Access Token for the [Authenticated 
 
 ##### User Endpoints
 
-- GET /api/user?page=?&pageSize=?&sortBy=? (Parameters are optional, you can remove if needed)
+- GET /api/user?page=?&pageSize=?&sortBy=? (The parameters are optional and can be omitted if not required)
 - GET /api/user/{username}
 
 ## Additional Information
