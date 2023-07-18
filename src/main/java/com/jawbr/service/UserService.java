@@ -44,12 +44,12 @@ public class UserService {
                 .orElse("id");
 
         Page<User> userList = Optional.of(
-                userRepository.findAll(PageRequest.of(
-                        Optional.ofNullable(page).orElse(0),
-                        pageSize,
-                        Sort.Direction.ASC,
-                        sortBy
-                )))
+                        userRepository.findAll(PageRequest.of(
+                                Optional.ofNullable(page).orElse(0),
+                                pageSize,
+                                Sort.Direction.ASC,
+                                sortBy
+                        )))
                 .filter(list -> !list.isEmpty())
                 .orElseThrow(() -> new UsernameNotFoundException("No users found."));
 
@@ -61,6 +61,25 @@ public class UserService {
                         userRepository.findByUsername(username))
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("Username '%s' not found!", username)));
         return mapToDto(user);
+    }
+
+    public UserDTO deactivateOrActivateAccountByUsername(String username) {
+        User user = Optional.ofNullable(
+                        userRepository.findByUsername(username))
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username '%s' not found!", username)));
+
+        user.setActive(!user.isActive());
+        userRepository.save(user);
+
+        return mapToDto(user);
+    }
+
+    public void deleteUserByUsername(String username) {
+        User user =  Optional.ofNullable(userRepository.findByUsername(username))
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username '%s' not found!", username)));
+        // Detach role entity
+        user.setRoles(null);
+        userRepository.delete(user);
     }
 
     // Utility method
@@ -99,4 +118,5 @@ public class UserService {
                     String.format("Username '%s' is taken!", userRequest.username()));
         }
     }
+
 }
