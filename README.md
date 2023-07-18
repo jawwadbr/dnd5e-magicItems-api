@@ -176,6 +176,8 @@ Use this endpoint to authenticate and get a Access Token for the [Authenticated 
 
 - GET /api/user?page=?&pageSize=?&sortBy=? (The parameters are optional and can be omitted if not required)
 - GET /api/user/{username}
+- DELETE /api/user/{username}
+- POST /api/user/{username}/activation (These endpoint deactivate or activate a User)
 
 ## Additional Information
 
