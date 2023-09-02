@@ -215,7 +215,7 @@ public class MagicItemService {
     private void isMagicItemHaveValidRarity(String itemRarity) {
         boolean isValid = false;
         for(Rarity rarity : Rarity.values()) {
-            if(rarity.name().equalsIgnoreCase(itemRarity)) {
+            if(rarity.getDisplayName().equalsIgnoreCase(itemRarity)) {
                 isValid = true;
                 break;
             }
