@@ -34,6 +34,8 @@ public class SecurityConfig {
                         // Equip Cat
                         .requestMatchers(HttpMethod.GET, "/api/equipment-categories", "/api/equipment-categories/{indexName}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/equipment-categories/id/{id}").hasRole("ADMIN")
+                        //
+                        .requestMatchers(HttpMethod.HEAD, "/api/status").permitAll()
                         .anyRequest().hasRole("ADMIN")
         );
 

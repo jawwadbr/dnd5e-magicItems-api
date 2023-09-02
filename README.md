@@ -53,6 +53,7 @@ java -jar target/dnd5e-api-0.0.1-SNAPSHOT.jar
 The API will be available at [localhost:8080](http://localhost:8080).
 
 ### Remotely
+[![Uptime Robot status](https://img.shields.io/uptimerobot/status/m795208943-9f8534bbaa41a8e3fe311c61.svg)](https://stats.uptimerobot.com/rGj26FwD08)
 
 The API is temporarily available at [18.229.31.108:8080](http://18.229.31.108:8080/api/magic-items) using [AWS (Amazon Web Services)](https://aws.amazon.com/pt/?nc2=h_lg).
 
