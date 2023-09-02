@@ -8,6 +8,7 @@ Dungeons and Dragons 5th edition.
 - [Technologies](https://github.com/jawwadbr/dnd5e-magicItems-api#technologies)
 - [How to run](https://github.com/jawwadbr/dnd5e-magicItems-api#how-to-run)
     * [Locally](https://github.com/jawwadbr/dnd5e-magicItems-api#locally)
+    * [Remotely](https://github.com/jawwadbr/dnd5e-magicItems-api#remotely)
 - [API Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#api-endpoints)
     * [Public Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#magic-items-endpoints)
       * [Authentication Endpoints](https://github.com/jawwadbr/dnd5e-magicItems-api#authentication-endpoints)
@@ -50,6 +51,10 @@ java -jar target/dnd5e-api-0.0.1-SNAPSHOT.jar
 ```
 
 The API will be available at [localhost:8080](http://localhost:8080).
+
+### Remotely
+
+The API is temporarily available at [18.229.31.108:8080](http://18.229.31.108:8080/api/magic-items) using [AWS (Amazon Web Services)](https://aws.amazon.com/pt/?nc2=h_lg).
 
 ## API Endpoints
 
